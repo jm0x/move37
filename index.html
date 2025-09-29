@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameHub - Simulador iOS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="device-container">
+
+        <!-- Pantalla principal con iconos -->
+        <div class="home-screen" id="home-screen">
+            <div class="wallpaper">
+                <div class="apps-grid" id="apps-grid">
+                    <!-- Los iconos se generarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor de juegos -->
+        <div class="game-container" id="game-container">
+            <div class="game-header">
+                <button class="close-game" id="close-game">✕</button>
+            </div>
+            <div class="game-content" id="game-content">
+                <!-- El contenido del juego se cargará aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

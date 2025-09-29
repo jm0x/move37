@@ -1,0 +1,225 @@
+/* Reset y configuración base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Contenedor del dispositivo */
+.device-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    max-width: 414px; /* iPhone 14 Pro Max width */
+    margin: 0 auto;
+    background: #000;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Modo escritorio - simular iPad */
+@media (min-width: 768px) {
+    .device-container {
+        max-width: 1200px;
+        height: 90vh;
+        margin: 5vh auto;
+        border-radius: 20px;
+        border: 8px solid #1d1d1f;
+    }
+}
+
+
+/* Pantalla principal */
+.home-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.wallpaper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Grid de aplicaciones */
+.apps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 40px 20px 20px;
+    height: calc(100% - 40px);
+    overflow-y: auto;
+}
+
+/* Iconos de aplicaciones */
+.app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.app-icon:hover {
+    transform: scale(1.05);
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.app-icon:active {
+    transform: scale(0.95);
+}
+
+.app-icon .icon {
+    font-size: 40px;
+    margin-bottom: 5px;
+}
+
+.app-icon .name {
+    font-size: 12px;
+    color: white;
+    text-align: center;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Contenedor de juegos */
+.game-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+}
+
+/* Modo escritorio - forzar centrado */
+@media (min-width: 768px) {
+    .game-container {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 70% !important;
+        max-width: 800px !important;
+        height: 80% !important;
+        z-index: 1000 !important;
+    }
+}
+
+.game-container.active {
+    display: flex;
+}
+
+/* Header del juego */
+.game-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.8);
+    position: relative;
+    z-index: 201;
+}
+
+.close-game {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close-game:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Contenido del juego */
+.game-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    position: relative;
+}
+
+/* Estilos adicionales para escritorio */
+@media (min-width: 768px) {
+    .game-container.active {
+        display: flex;
+    }
+    
+    .game-header {
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .game-content {
+        border-radius: 0 0 15px 15px;
+    }
+    
+    .game-container {
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.app-icon {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.game-container.active {
+    animation: slideUp 0.3s ease forwards;
+}
+
+/* Scrollbar personalizado */
+.apps-grid::-webkit-scrollbar {
+    width: 0;
+}
