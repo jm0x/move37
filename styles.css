@@ -215,15 +215,17 @@ body {
 .apps-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 20px 20px; /* gap vertical y horizontal explícitos */
     padding: 160px 20px 20px;
     height: calc(100% - 40px);
     overflow-y: auto;
+    align-items: start; /* alinear items al inicio */
 }
 
 @media (max-width: 768px) {
     .apps-grid {
         grid-template-columns: repeat(3, 1fr);
+        gap: 20px 20px; /* gap vertical y horizontal iguales */
         padding: 140px 20px 20px;
     }
 }
