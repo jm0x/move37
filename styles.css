@@ -56,14 +56,165 @@ body {
     background-repeat: no-repeat;
 }
 
+/* Widget de usuario */
+.user-widget {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 12px 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 10;
+    min-width: 180px;
+    animation: fadeIn 0.6s ease forwards;
+}
+
+.widget-header {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-name {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.widget-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.stat-icon {
+    font-size: 20px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.stat-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: lowercase;
+    margin-top: 2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.stat-divider {
+    width: 1px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .user-widget {
+        top: 10px;
+        right: 10px;
+        min-width: 150px;
+        padding: 10px 12px;
+    }
+
+    .user-name {
+        font-size: 12px;
+    }
+
+    .stat-icon {
+        font-size: 18px;
+    }
+
+    .stat-value {
+        font-size: 14px;
+    }
+
+    .stat-label {
+        font-size: 9px;
+    }
+
+    .stat-divider {
+        height: 28px;
+    }
+}
+
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 375px) {
+    .user-widget {
+        top: 8px;
+        right: 8px;
+        min-width: 140px;
+        padding: 8px 10px;
+        border-radius: 16px;
+    }
+
+    .user-name {
+        font-size: 11px;
+    }
+
+    .stat-icon {
+        font-size: 16px;
+    }
+
+    .stat-value {
+        font-size: 13px;
+    }
+
+    .stat-label {
+        font-size: 8px;
+    }
+
+    .stat-divider {
+        height: 26px;
+    }
+
+    .widget-stats {
+        gap: 8px;
+    }
+
+    .stat-item {
+        gap: 6px;
+    }
+}
+
 /* Grid de aplicaciones */
 .apps-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    padding: 40px 20px 20px;
+    padding: 160px 20px 20px;
     height: calc(100% - 40px);
     overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .apps-grid {
+        padding: 140px 20px 20px;
+    }
 }
 
 /* Iconos de aplicaciones */
@@ -114,10 +265,10 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: #000;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
     z-index: 200;
     display: none;
-    flex-direction: column;
+    border: 1px solid rgba(76, 175, 80, 0.2);
 }
 
 /* Modo escritorio - forzar centrado */
@@ -127,76 +278,73 @@ body {
         top: 50% !important;
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
-        width: 70% !important;
-        max-width: 800px !important;
-        height: 80% !important;
+        width: auto !important;
+        max-width: none !important;
+        height: auto !important;
         z-index: 1000 !important;
+        border: 1px solid rgba(76, 175, 80, 0.3);
     }
 }
 
 .game-container.active {
-    display: flex;
+    display: block;
 }
 
 /* Header del juego */
 .game-header {
-    display: flex;
-    justify-content: flex-end;
-    padding: 15px 20px;
-    background: rgba(0, 0, 0, 0.8);
-    position: relative;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     z-index: 201;
 }
 
 .close-game {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .close-game:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.9);
+    border-color: rgba(255, 255, 255, 0.5);
     transform: scale(1.1);
 }
 
 /* Contenido del juego */
 .game-content {
-    flex: 1;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f0f0f0;
+    background: transparent;
     position: relative;
 }
 
 /* Estilos adicionales para escritorio */
 @media (min-width: 768px) {
     .game-container.active {
-        display: flex;
+        display: block;
     }
-    
-    .game-header {
-        border-radius: 15px 15px 0 0;
-    }
-    
+
     .game-content {
-        border-radius: 0 0 15px 15px;
+        border-radius: 15px;
     }
-    
+
     .game-container {
         border-radius: 15px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     }
 }
 
