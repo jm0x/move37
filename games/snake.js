@@ -19,34 +19,25 @@ let snakeGame = {
 // Cargar interfaz del juego Snake
 function loadSnakeGame() {
     const gameContent = document.getElementById('game-content');
+    const isMobile = window.innerWidth < 768;
+    const cellSize = 20;
+    let desiredSize = isMobile ? Math.min(window.innerWidth - 40, 400) : 400;
+    // Asegurar que el tamaño sea múltiplo de cellSize
+    const canvasSize = Math.floor(desiredSize / cellSize) * cellSize;
+
     gameContent.innerHTML = `
         <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); color: white; position: relative; padding: 20px;">
-            <div style="text-align: center; margin-bottom: 20px; width: 400px;">
+            <div style="text-align: center; margin-bottom: 20px; max-width: ${canvasSize}px;">
                 <h2 style="margin: 0; color: #4CAF50; font-size: 28px; font-weight: 600; letter-spacing: 2px;">🐍 SNAKE</h2>
                 <p style="margin: 12px 0 0 0; color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Puntuación: <span id="score" style="color: #4CAF50; font-weight: 600;">0</span></p>
             </div>
 
             <div style="position: relative;">
-                <canvas id="snakeCanvas" width="400" height="400" style="border: none; border-radius: 8px; background: #000; box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.3), 0 8px 32px rgba(0, 0, 0, 0.6);"></canvas>
+                <canvas id="snakeCanvas" width="${canvasSize}" height="${canvasSize}" style="border: none; border-radius: 8px; background: #000; box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.3), 0 8px 32px rgba(0, 0, 0, 0.6); max-width: 100%;"></canvas>
                 <div id="gameOver" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; display: none; background: rgba(0, 0, 0, 0.95); padding: 40px; border-radius: 12px; box-shadow: 0 0 0 1px rgba(255, 68, 68, 0.3), 0 8px 32px rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);">
                     <h3 style="color: #ff4444; margin-bottom: 20px; font-size: 24px;">Game Over!</h3>
                     <p style="margin-bottom: 25px; color: #ccc;">Puntuación final: <span id="finalScore" style="color: #4CAF50; font-weight: 600;">0</span></p>
                     <button id="restartBtn" style="padding: 12px 28px; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);">Reiniciar</button>
-                </div>
-            </div>
-
-            <!-- Controles táctiles para móvil -->
-            <div id="mobileControls" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-                <div style="display: grid; grid-template-columns: repeat(3, 45px); gap: 6px; justify-content: center;">
-                    <div></div>
-                    <button class="control-btn" data-direction="up" style="width: 45px; height: 45px; background: rgba(76, 175, 80, 0.15); color: rgba(76, 175, 80, 0.8); border: 1px solid rgba(76, 175, 80, 0.25); border-radius: 8px; font-size: 20px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px);">↑</button>
-                    <div></div>
-                    <button class="control-btn" data-direction="left" style="width: 45px; height: 45px; background: rgba(76, 175, 80, 0.15); color: rgba(76, 175, 80, 0.8); border: 1px solid rgba(76, 175, 80, 0.25); border-radius: 8px; font-size: 20px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px);">←</button>
-                    <div></div>
-                    <button class="control-btn" data-direction="right" style="width: 45px; height: 45px; background: rgba(76, 175, 80, 0.15); color: rgba(76, 175, 80, 0.8); border: 1px solid rgba(76, 175, 80, 0.25); border-radius: 8px; font-size: 20px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px);">→</button>
-                    <div></div>
-                    <button class="control-btn" data-direction="down" style="width: 45px; height: 45px; background: rgba(76, 175, 80, 0.15); color: rgba(76, 175, 80, 0.8); border: 1px solid rgba(76, 175, 80, 0.25); border-radius: 8px; font-size: 20px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px);">↓</button>
-                    <div></div>
                 </div>
             </div>
         </div>
@@ -61,16 +52,15 @@ function initializeSnakeGame() {
     snakeGame.canvas = document.getElementById('snakeCanvas');
     snakeGame.ctx = snakeGame.canvas.getContext('2d');
 
+    // Actualizar el tamaño del canvas en las variables del juego
+    snakeGame.canvasSize = snakeGame.canvas.width;
+
     // Detectar si es móvil
     const isMobile = window.innerWidth < 768;
-    const mobileControls = document.getElementById('mobileControls');
 
     if (isMobile) {
-        mobileControls.style.display = 'block';
-        setupMobileControls();
         setupTouchControls();
     } else {
-        mobileControls.style.display = 'none';
         setupKeyboardControls();
     }
 
@@ -96,32 +86,6 @@ function setupKeyboardControls() {
                 if (snakeGame.direction !== 'left') snakeGame.nextDirection = 'right';
                 break;
         }
-    });
-}
-
-// Configurar controles táctiles móviles
-function setupMobileControls() {
-    const controlBtns = document.querySelectorAll('.control-btn');
-    controlBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const direction = btn.getAttribute('data-direction');
-            if (!snakeGame.gameRunning) return;
-
-            switch(direction) {
-                case 'up':
-                    if (snakeGame.direction !== 'down') snakeGame.nextDirection = 'up';
-                    break;
-                case 'down':
-                    if (snakeGame.direction !== 'up') snakeGame.nextDirection = 'down';
-                    break;
-                case 'left':
-                    if (snakeGame.direction !== 'right') snakeGame.nextDirection = 'left';
-                    break;
-                case 'right':
-                    if (snakeGame.direction !== 'left') snakeGame.nextDirection = 'right';
-                    break;
-            }
-        });
     });
 }
 
@@ -242,14 +206,14 @@ function gameTick() {
     // Verificar colisiones con bordes
     const gridSize = snakeGame.canvasSize / snakeGame.cellSize;
     if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
-        gameOver();
+        snakeGameOver();
         return;
     }
 
     // Verificar colisión consigo misma
-    for (let segment of snakeGame.snake) {
-        if (head.x === segment.x && head.y === segment.y) {
-            gameOver();
+    for (let i = 0; i < snakeGame.snake.length; i++) {
+        if (head.x === snakeGame.snake[i].x && head.y === snakeGame.snake[i].y) {
+            snakeGameOver();
             return;
         }
     }
@@ -298,7 +262,7 @@ function drawGame() {
 }
 
 // Game Over
-function gameOver() {
+function snakeGameOver() {
     snakeGame.gameRunning = false;
     clearInterval(snakeGame.gameLoop);
 
