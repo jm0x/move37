@@ -78,6 +78,11 @@ function initializeApp() {
     setupEventListeners();
     detectDeviceType();
     setWallpaper(currentWallpaper);
+
+    // Mostrar la pantalla principal una vez que todo esté cargado
+    requestAnimationFrame(() => {
+        homeScreen.classList.add('loaded');
+    });
 }
 
 // Crear widget de usuario
@@ -121,7 +126,6 @@ function createAppIcons() {
     games.forEach((game, index) => {
         const appIcon = document.createElement('div');
         appIcon.className = 'app-icon';
-        appIcon.style.animationDelay = `${index * 0.1}s`;
 
         appIcon.innerHTML = `
             <div class="icon">${game.icon}</div>
@@ -180,9 +184,10 @@ function openGame(game) {
     // Cargar contenido del juego
     loadGameContent(game);
 
-    // En móvil, ocultar la pantalla principal
+    // En móvil, ocultar la pantalla principal usando visibilidad
     if (!isDesktop) {
-        homeScreen.style.display = 'none';
+        homeScreen.style.visibility = 'hidden';
+        homeScreen.style.opacity = '0';
     }
 }
 
@@ -208,7 +213,8 @@ function loadGameContent(game) {
 // Cerrar juego
 function closeGame() {
     gameContainer.classList.remove('active');
-    homeScreen.style.display = 'block';
+    homeScreen.style.visibility = 'visible';
+    homeScreen.style.opacity = '1';
     currentGame = null;
 
     // Limpiar contenido del juego
