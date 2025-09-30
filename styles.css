@@ -223,6 +223,7 @@ body {
 
 @media (max-width: 768px) {
     .apps-grid {
+        grid-template-columns: repeat(3, 1fr);
         padding: 140px 20px 20px;
     }
 }

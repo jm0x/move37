@@ -21,7 +21,9 @@ let combatGame = {
         p2Right: null,
         p2Fire: null
     },
-    keys: {}
+    keys: {},
+    isMobile: false,
+    aiTimer: 0
 };
 
 // Tank class
@@ -128,36 +130,21 @@ function loadCombatGame() {
     const canvasSize = Math.floor(desiredSize / cellSize) * cellSize;
 
     const mobileControls = isMobile ? `
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: ${canvasSize}px; margin-top: 20px;">
-            <!-- Player 1 Controls -->
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="text-align: center; color: #4CAF50; font-size: 12px; font-weight: 600; margin-bottom: 5px;">PLAYER 1</div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
-                    <button id="p1-left" style="padding: 12px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 6px; font-size: 16px; cursor: pointer; user-select: none; touch-action: manipulation;">⟲</button>
-                    <button id="p1-right" style="padding: 12px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 6px; font-size: 16px; cursor: pointer; user-select: none; touch-action: manipulation;">⟳</button>
-                </div>
-                <button id="p1-fire" style="padding: 12px; background: rgba(76, 175, 80, 0.3); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; touch-action: manipulation;">FIRE</button>
+        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: ${canvasSize}px; margin-top: 20px; align-items: center;">
+            <div style="text-align: center; color: #4CAF50; font-size: 12px; font-weight: 600; margin-bottom: 5px;">TU TANQUE AVANZA SOLO - CONTROLA LA DIRECCIÓN</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 250px;">
+                <button id="p1-left" style="padding: 15px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 8px; font-size: 18px; cursor: pointer; user-select: none; touch-action: manipulation;">⟲ IZQUIERDA</button>
+                <button id="p1-right" style="padding: 15px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 8px; font-size: 18px; cursor: pointer; user-select: none; touch-action: manipulation;">DERECHA ⟳</button>
             </div>
-
-            <!-- Player 2 Controls -->
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                <div style="text-align: center; color: #2196F3; font-size: 12px; font-weight: 600; margin-bottom: 5px;">PLAYER 2</div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
-                    <button id="p2-left" style="padding: 12px; background: rgba(33, 150, 243, 0.2); color: #2196F3; border: 2px solid #2196F3; border-radius: 6px; font-size: 16px; cursor: pointer; user-select: none; touch-action: manipulation;">⟲</button>
-                    <button id="p2-right" style="padding: 12px; background: rgba(33, 150, 243, 0.2); color: #2196F3; border: 2px solid #2196F3; border-radius: 6px; font-size: 16px; cursor: pointer; user-select: none; touch-action: manipulation;">⟳</button>
-                </div>
-                <button id="p2-fire" style="padding: 12px; background: rgba(33, 150, 243, 0.3); color: #2196F3; border: 2px solid #2196F3; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; touch-action: manipulation;">FIRE</button>
-            </div>
+            <button id="p1-fire" style="padding: 15px 40px; background: rgba(76, 175, 80, 0.3); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; user-select: none; touch-action: manipulation;">🔥 DISPARAR</button>
         </div>
     ` : `
         <div style="text-align: center; margin-top: 15px; color: #888; font-size: 12px; max-width: ${canvasSize}px;">
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; text-align: left;">
-                <div>
-                    <strong style="color: #4CAF50;">Player 1:</strong> A/D - Rotate, W/S - Move, Space - Fire
-                </div>
-                <div>
-                    <strong style="color: #2196F3;">Player 2:</strong> ←/→ - Rotate, ↑/↓ - Move, Enter - Fire
-                </div>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <strong style="color: #4CAF50;">Tú:</strong> A/D - Rotar, W/S - Mover, Espacio - Disparar
+            </div>
+            <div style="text-align: center; color: #666; font-size: 11px;">
+                El tanque azul está controlado por la CPU
             </div>
         </div>
     `;
@@ -168,11 +155,11 @@ function loadCombatGame() {
                 <h2 style="margin: 0; color: #ff6b35; font-size: 28px; font-weight: 600; letter-spacing: 2px;">🎯 COMBAT</h2>
                 <div style="margin: 12px 0 0 0; display: flex; justify-content: space-around; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
                     <div>
-                        <span style="color: #4CAF50;">Player 1:</span>
+                        <span style="color: #4CAF50;">Tú:</span>
                         <span id="score-p1" style="color: #4CAF50; font-weight: 600; margin-left: 5px;">0</span>
                     </div>
                     <div>
-                        <span style="color: #2196F3;">Player 2:</span>
+                        <span style="color: #2196F3;">CPU:</span>
                         <span id="score-p2" style="color: #2196F3; font-weight: 600; margin-left: 5px;">0</span>
                     </div>
                 </div>
@@ -202,9 +189,9 @@ function initializeCombatGame() {
     combatGame.canvasSize = combatGame.canvas.width;
 
     // Detect if mobile
-    const isMobile = window.innerWidth < 768;
+    combatGame.isMobile = window.innerWidth < 768;
 
-    if (isMobile) {
+    if (combatGame.isMobile) {
         setupTouchControlsCombat();
     } else {
         setupKeyboardControlsCombat();
@@ -233,10 +220,7 @@ function setupTouchControlsCombat() {
     const buttons = {
         'p1-left': () => combatGame.tank1 && combatGame.tank1.rotate(-1),
         'p1-right': () => combatGame.tank1 && combatGame.tank1.rotate(1),
-        'p1-fire': () => combatGame.tank1 && combatGame.tank1.fire(),
-        'p2-left': () => combatGame.tank2 && combatGame.tank2.rotate(-1),
-        'p2-right': () => combatGame.tank2 && combatGame.tank2.rotate(1),
-        'p2-fire': () => combatGame.tank2 && combatGame.tank2.fire()
+        'p1-fire': () => combatGame.tank1 && combatGame.tank1.fire()
     };
 
     Object.keys(buttons).forEach(id => {
@@ -281,6 +265,7 @@ function startCombatGame() {
     // Reset game variables
     combatGame.bullets = [];
     combatGame.gameRunning = true;
+    combatGame.aiTimer = 0;
 
     // Create tanks
     combatGame.tank1 = new Tank(100, combatGame.canvasSize / 2, '#4CAF50', 1);
@@ -358,17 +343,14 @@ function combatGameTick() {
 
 // Handle player input
 function handleInput() {
-    const isMobile = window.innerWidth < 768;
-
-    if (isMobile) {
-        // Touch controls
+    if (combatGame.isMobile) {
+        // Touch controls - Player 1
         if (combatGame.touchButtons['p1-left']) combatGame.tank1.rotate(-1);
         if (combatGame.touchButtons['p1-right']) combatGame.tank1.rotate(1);
         if (combatGame.touchButtons['p1-fire']) combatGame.tank1.fire();
 
-        if (combatGame.touchButtons['p2-left']) combatGame.tank2.rotate(-1);
-        if (combatGame.touchButtons['p2-right']) combatGame.tank2.rotate(1);
-        if (combatGame.touchButtons['p2-fire']) combatGame.tank2.fire();
+        // Auto-move forward on mobile
+        combatGame.tank1.move(1);
     } else {
         // Keyboard controls - Player 1 (WASD + Space)
         if (combatGame.keys['a'] || combatGame.keys['A']) combatGame.tank1.rotate(-1);
@@ -376,13 +358,41 @@ function handleInput() {
         if (combatGame.keys['w'] || combatGame.keys['W']) combatGame.tank1.move(1);
         if (combatGame.keys['s'] || combatGame.keys['S']) combatGame.tank1.move(-1);
         if (combatGame.keys[' ']) combatGame.tank1.fire();
+    }
 
-        // Keyboard controls - Player 2 (Arrows + Enter)
-        if (combatGame.keys['ArrowLeft']) combatGame.tank2.rotate(-1);
-        if (combatGame.keys['ArrowRight']) combatGame.tank2.rotate(1);
-        if (combatGame.keys['ArrowUp']) combatGame.tank2.move(1);
-        if (combatGame.keys['ArrowDown']) combatGame.tank2.move(-1);
-        if (combatGame.keys['Enter']) combatGame.tank2.fire();
+    // AI controls Player 2 always (mobile and desktop)
+    handleAI();
+}
+
+// Simple AI for Player 2 on mobile
+function handleAI() {
+    combatGame.aiTimer++;
+
+    // Move forward continuously
+    combatGame.tank2.move(1);
+
+    // Calculate angle to player
+    const dx = combatGame.tank1.x - combatGame.tank2.x;
+    const dy = combatGame.tank1.y - combatGame.tank2.y;
+    const targetAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+    // Normalize angles
+    let angleDiff = targetAngle - combatGame.tank2.angle;
+    while (angleDiff > 180) angleDiff -= 360;
+    while (angleDiff < -180) angleDiff += 360;
+
+    // Rotate towards player with some randomness
+    if (Math.abs(angleDiff) > 5) {
+        if (angleDiff > 0) {
+            combatGame.tank2.rotate(1);
+        } else {
+            combatGame.tank2.rotate(-1);
+        }
+    }
+
+    // Fire occasionally when roughly aimed at player
+    if (combatGame.aiTimer % 90 === 0 && Math.abs(angleDiff) < 30) {
+        combatGame.tank2.fire();
     }
 }
 
@@ -498,7 +508,8 @@ function endRound(winner) {
     const winnerText = document.getElementById('winnerText');
 
     if (gameOverDiv && winnerText) {
-        winnerText.textContent = `${winner} Wins!`;
+        const displayWinner = winner === 'Player 1' ? '¡Ganaste!' : '¡Perdiste!';
+        winnerText.textContent = displayWinner;
         winnerText.style.color = winner === 'Player 1' ? '#4CAF50' : '#2196F3';
         gameOverDiv.style.display = 'block';
     }
