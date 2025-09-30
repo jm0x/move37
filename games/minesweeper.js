@@ -1,4 +1,4 @@
-// Variables del juego Buscaminas
+// Minesweeper game variables
 let minesweeperGame = {
     canvas: null,
     ctx: null,
@@ -18,13 +18,13 @@ let minesweeperGame = {
     longPressTriggered: false
 };
 
-// Cargar interfaz del juego Buscaminas
+// Load Minesweeper game interface
 function loadMinesweeperGame() {
     const gameContent = document.getElementById('game-content');
     gameContent.innerHTML = `
         <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); color: white; position: relative; padding: 20px;">
             <div style="text-align: center; margin-bottom: 20px; width: 100%; max-width: 400px;">
-                <h2 style="margin: 0; color: #2196F3; font-size: 28px; font-weight: 600; letter-spacing: 2px;">💣 BUSCAMINAS</h2>
+                <h2 style="margin: 0; color: #2196F3; font-size: 28px; font-weight: 600; letter-spacing: 2px;">💣 MINESWEEPER</h2>
                 <div style="display: flex; justify-content: space-between; margin: 12px 0 0 0; color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
                     <span>🚩 <span id="flags-count" style="color: #2196F3; font-weight: 600;">0</span>/<span id="total-mines">15</span></span>
                     <span>⏱️ <span id="timer" style="color: #2196F3; font-weight: 600;">0</span>s</span>
@@ -36,43 +36,43 @@ function loadMinesweeperGame() {
                 <div id="gameResult" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; display: none; background: rgba(0, 0, 0, 0.95); padding: 40px; border-radius: 12px; box-shadow: 0 0 0 1px rgba(33, 150, 243, 0.3), 0 8px 32px rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); min-width: 250px;">
                     <h3 id="resultTitle" style="margin-bottom: 20px; font-size: 24px;"></h3>
                     <p id="resultMessage" style="margin-bottom: 25px; color: #ccc;"></p>
-                    <button id="restartBtn" style="padding: 12px 28px; background: #2196F3; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);">Nuevo Juego</button>
+                    <button id="restartBtn" style="padding: 12px 28px; background: #2196F3; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);">New Game</button>
                 </div>
             </div>
 
             <div style="margin-top: 20px; text-align: center; color: #666; font-size: 12px;">
-                <p>Click izquierdo: Revelar | Click derecho: Bandera</p>
+                <p>Left click: Reveal | Right click / Long press: Flag</p>
             </div>
         </div>
     `;
 
-    // Inicializar el juego Buscaminas
+    // Initialize Minesweeper game
     initializeMinesweeperGame();
 }
 
-// Inicializar el juego Buscaminas
+// Initialize Minesweeper game
 function initializeMinesweeperGame() {
     minesweeperGame.canvas = document.getElementById('minesweeperCanvas');
     minesweeperGame.ctx = minesweeperGame.canvas.getContext('2d');
 
-    // Actualizar contador de minas
+    // Update mines counter
     document.getElementById('total-mines').textContent = minesweeperGame.mines;
 
-    // Configurar eventos
+    // Setup events
     setupMinesweeperControls();
 
-    // Iniciar nuevo juego
+    // Start new game
     startMinesweeperGame();
 }
 
-// Configurar controles
+// Setup controls
 function setupMinesweeperControls() {
     const canvas = minesweeperGame.canvas;
 
-    // Click izquierdo - revelar celda (desktop)
+    // Left click - reveal cell (desktop)
     canvas.addEventListener('click', (e) => {
         if (!minesweeperGame.gameRunning) return;
-        // Evitar que el click se dispare después de un long press en móvil
+        // Prevent click from firing after long press on mobile
         if (minesweeperGame.longPressTriggered) {
             minesweeperGame.longPressTriggered = false;
             return;
@@ -83,7 +83,7 @@ function setupMinesweeperControls() {
         handleCellClick(x, y);
     });
 
-    // Click derecho - colocar/quitar bandera (desktop)
+    // Right click - place/remove flag (desktop)
     canvas.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         if (!minesweeperGame.gameRunning) return;
@@ -93,7 +93,7 @@ function setupMinesweeperControls() {
         toggleFlag(x, y);
     });
 
-    // Touch start - iniciar temporizador para long press (móvil)
+    // Touch start - start timer for long press (mobile)
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         if (!minesweeperGame.gameRunning) return;
@@ -106,25 +106,25 @@ function setupMinesweeperControls() {
         minesweeperGame.touchStartTime = Date.now();
         minesweeperGame.longPressTriggered = false;
 
-        // Timer para long press (500ms)
+        // Timer for long press (500ms)
         minesweeperGame.touchTimer = setTimeout(() => {
             minesweeperGame.longPressTriggered = true;
             toggleFlag(x, y);
-            // Vibración táctil si está disponible
+            // Haptic feedback if available
             if (navigator.vibrate) {
                 navigator.vibrate(50);
             }
         }, 500);
     });
 
-    // Touch end - ejecutar acción según duración (móvil)
+    // Touch end - execute action based on duration (mobile)
     canvas.addEventListener('touchend', (e) => {
         e.preventDefault();
         if (!minesweeperGame.gameRunning) return;
 
         clearTimeout(minesweeperGame.touchTimer);
 
-        // Si fue un tap corto, revelar celda
+        // If it was a short tap, reveal cell
         if (!minesweeperGame.longPressTriggered) {
             const touch = e.changedTouches[0];
             const rect = canvas.getBoundingClientRect();
@@ -134,45 +134,45 @@ function setupMinesweeperControls() {
         }
     });
 
-    // Touch cancel - cancelar temporizador
+    // Touch cancel - cancel timer
     canvas.addEventListener('touchcancel', () => {
         clearTimeout(minesweeperGame.touchTimer);
         minesweeperGame.longPressTriggered = false;
     });
 
-    // Botón de reinicio
+    // Restart button
     document.getElementById('restartBtn').addEventListener('click', startMinesweeperGame);
 }
 
-// Iniciar nuevo juego
+// Start new game
 function startMinesweeperGame() {
-    // Reiniciar variables
+    // Reset variables
     minesweeperGame.gameRunning = true;
     minesweeperGame.firstClick = true;
     minesweeperGame.flagsPlaced = 0;
     minesweeperGame.cellsRevealed = 0;
     minesweeperGame.startTime = null;
 
-    // Detener temporizador anterior
+    // Stop previous timer
     if (minesweeperGame.timerInterval) {
         clearInterval(minesweeperGame.timerInterval);
     }
 
-    // Resetear timer
+    // Reset timer
     document.getElementById('timer').textContent = '0';
     document.getElementById('flags-count').textContent = '0';
 
-    // Crear grid vacío
+    // Create empty grid
     createEmptyGrid();
 
-    // Ocultar resultado
+    // Hide result
     document.getElementById('gameResult').style.display = 'none';
 
-    // Dibujar grid
+    // Draw grid
     drawGrid();
 }
 
-// Crear grid vacío
+// Create empty grid
 function createEmptyGrid() {
     minesweeperGame.grid = [];
     for (let y = 0; y < minesweeperGame.rows; y++) {
@@ -188,14 +188,14 @@ function createEmptyGrid() {
     }
 }
 
-// Colocar minas (después del primer click)
+// Place mines (after first click)
 function placeMines(firstX, firstY) {
     let minesPlaced = 0;
     while (minesPlaced < minesweeperGame.mines) {
         const x = Math.floor(Math.random() * minesweeperGame.cols);
         const y = Math.floor(Math.random() * minesweeperGame.rows);
 
-        // No colocar mina en la primera celda clickeada ni en celdas adyacentes
+        // Don't place mine on first clicked cell or adjacent cells
         const isFirstClick = (x === firstX && y === firstY);
         const isAdjacent = Math.abs(x - firstX) <= 1 && Math.abs(y - firstY) <= 1;
 
@@ -205,11 +205,11 @@ function placeMines(firstX, firstY) {
         }
     }
 
-    // Calcular números adyacentes
+    // Calculate adjacent numbers
     calculateAdjacentMines();
 }
 
-// Calcular minas adyacentes
+// Calculate adjacent mines
 function calculateAdjacentMines() {
     for (let y = 0; y < minesweeperGame.rows; y++) {
         for (let x = 0; x < minesweeperGame.cols; x++) {
@@ -231,16 +231,16 @@ function calculateAdjacentMines() {
     }
 }
 
-// Manejar click en celda
+// Handle cell click
 function handleCellClick(x, y) {
     if (x < 0 || x >= minesweeperGame.cols || y < 0 || y >= minesweeperGame.rows) return;
 
     const cell = minesweeperGame.grid[y][x];
 
-    // No revelar celdas con bandera
+    // Don't reveal flagged cells
     if (cell.isFlagged) return;
 
-    // Primer click - colocar minas y empezar timer
+    // First click - place mines and start timer
     if (minesweeperGame.firstClick) {
         minesweeperGame.firstClick = false;
         placeMines(x, y);
@@ -248,17 +248,17 @@ function handleCellClick(x, y) {
         startTimer();
     }
 
-    // Si ya está revelada, ignorar
+    // If already revealed, ignore
     if (cell.isRevealed) return;
 
-    // Revelar celda
+    // Reveal cell
     revealCell(x, y);
 
-    // Verificar estado del juego
+    // Check game state
     checkGameState();
 }
 
-// Revelar celda
+// Reveal cell
 function revealCell(x, y) {
     if (x < 0 || x >= minesweeperGame.cols || y < 0 || y >= minesweeperGame.rows) return;
 
@@ -269,13 +269,13 @@ function revealCell(x, y) {
     cell.isRevealed = true;
     minesweeperGame.cellsRevealed++;
 
-    // Si es mina, game over
+    // If it's a mine, game over
     if (cell.isMine) {
         gameOver(false);
         return;
     }
 
-    // Si no tiene minas adyacentes, revelar celdas vecinas
+    // If no adjacent mines, reveal neighboring cells
     if (cell.adjacentMines === 0) {
         for (let dy = -1; dy <= 1; dy++) {
             for (let dx = -1; dx <= 1; dx++) {
@@ -288,7 +288,7 @@ function revealCell(x, y) {
     drawGrid();
 }
 
-// Alternar bandera
+// Toggle flag
 function toggleFlag(x, y) {
     if (x < 0 || x >= minesweeperGame.cols || y < 0 || y >= minesweeperGame.rows) return;
 
@@ -305,18 +305,18 @@ function toggleFlag(x, y) {
     checkGameState();
 }
 
-// Verificar estado del juego
+// Check game state
 function checkGameState() {
     const totalCells = minesweeperGame.rows * minesweeperGame.cols;
     const safeCells = totalCells - minesweeperGame.mines;
 
-    // Victoria: todas las celdas seguras reveladas
+    // Victory: all safe cells revealed
     if (minesweeperGame.cellsRevealed === safeCells) {
         gameOver(true);
     }
 }
 
-// Empezar temporizador
+// Start timer
 function startTimer() {
     minesweeperGame.timerInterval = setInterval(() => {
         const elapsed = Math.floor((Date.now() - minesweeperGame.startTime) / 1000);
@@ -351,19 +351,19 @@ function gameOver(won) {
 
     if (won) {
         const time = document.getElementById('timer').textContent;
-        resultTitle.textContent = '🎉 ¡Victoria!';
+        resultTitle.textContent = '🎉 Victory!';
         resultTitle.style.color = '#4CAF50';
-        resultMessage.textContent = `¡Completado en ${time} segundos!`;
+        resultMessage.textContent = `Completed in ${time} seconds!`;
     } else {
         resultTitle.textContent = '💥 Game Over';
         resultTitle.style.color = '#ff4444';
-        resultMessage.textContent = '¡Has pisado una mina!';
+        resultMessage.textContent = 'You hit a mine!';
     }
 
     resultDiv.style.display = 'block';
 }
 
-// Dibujar grid
+// Draw grid
 function drawGrid() {
     const ctx = minesweeperGame.ctx;
     const cellSize = minesweeperGame.cellSize;
@@ -377,9 +377,9 @@ function drawGrid() {
             const py = y * cellSize;
 
             if (cell.isRevealed) {
-                // Celda revelada
+                // Revealed cell
                 if (cell.isMine) {
-                    // Mina
+                    // Mine
                     ctx.fillStyle = '#ff4444';
                     ctx.fillRect(px, py, cellSize, cellSize);
                     ctx.fillStyle = '#000';
@@ -388,7 +388,7 @@ function drawGrid() {
                     ctx.textBaseline = 'middle';
                     ctx.fillText('💣', px + cellSize / 2, py + cellSize / 2);
                 } else {
-                    // Celda segura
+                    // Safe cell
                     ctx.fillStyle = '#2a2a2a';
                     ctx.fillRect(px, py, cellSize, cellSize);
 
@@ -402,11 +402,11 @@ function drawGrid() {
                     }
                 }
             } else {
-                // Celda no revelada
+                // Unrevealed cell
                 ctx.fillStyle = '#3a3a3a';
                 ctx.fillRect(px, py, cellSize, cellSize);
 
-                // Bandera
+                // Flag
                 if (cell.isFlagged) {
                     ctx.fillStyle = '#ff4444';
                     ctx.font = '20px Arial';
@@ -416,7 +416,7 @@ function drawGrid() {
                 }
             }
 
-            // Bordes
+            // Borders
             ctx.strokeStyle = '#1a1a1a';
             ctx.lineWidth = 1;
             ctx.strokeRect(px, py, cellSize, cellSize);

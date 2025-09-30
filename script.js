@@ -1,4 +1,4 @@
-// Configuración de juegos disponibles
+// Game configuration
 const games = [
     {
         id: 'snake',
@@ -8,19 +8,25 @@ const games = [
     },
     {
         id: 'minesweeper',
-        name: 'Buscaminas',
+        name: 'Minesweeper',
         icon: '💣',
         color: '#2196F3'
     },
     {
+        id: 'combat',
+        name: 'Combat',
+        icon: '🎯',
+        color: '#ff6b35'
+    },
+    {
         id: 'settings',
-        name: 'Ajustes',
+        name: 'Settings',
         icon: '⚙️',
         color: '#607D8B'
     }
 ];
 
-// Fondos de pantalla disponibles
+// Available wallpapers
 const wallpapers = [
     {
         id: 'bliss',
@@ -29,49 +35,49 @@ const wallpapers = [
     },
     {
         id: 'gradient-elegant',
-        name: 'Elegante',
+        name: 'Elegant',
         image: null,
         gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     },
     {
         id: 'gradient-sunset',
-        name: 'Atardecer',
+        name: 'Sunset',
         image: null,
         gradient: 'linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%)'
     },
     {
         id: 'gradient-dark',
-        name: 'Oscuro',
+        name: 'Dark',
         image: null,
         gradient: 'linear-gradient(135deg, #2C3E50 0%, #34495E 100%)'
     }
 ];
 
-// Variables globales
+// Global variables
 let currentGame = null;
 let isDesktop = window.innerWidth >= 768;
-let currentWallpaper = 'gradient-elegant'; // Fondo por defecto
+let currentWallpaper = 'gradient-elegant'; // Default wallpaper
 
-// Datos de usuario simulados
+// Simulated user data
 const userData = {
-    name: 'Jugador',
+    name: 'Player',
     consecutiveDays: 7,
     totalPoints: 1250
 };
 
-// Elementos del DOM
+// DOM elements
 const homeScreen = document.getElementById('home-screen');
 const gameContainer = document.getElementById('game-container');
 const gameContent = document.getElementById('game-content');
 const closeGameBtn = document.getElementById('close-game');
 const appsGrid = document.getElementById('apps-grid');
 
-// Inicialización
+// Initialization
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
 
-// Función principal de inicialización
+// Main initialization function
 function initializeApp() {
     createUserWidget();
     createAppIcons();
@@ -79,13 +85,13 @@ function initializeApp() {
     detectDeviceType();
     setWallpaper(currentWallpaper);
 
-    // Mostrar la pantalla principal una vez que todo esté cargado
+    // Show home screen once everything is loaded
     requestAnimationFrame(() => {
         homeScreen.classList.add('loaded');
     });
 }
 
-// Crear widget de usuario
+// Create user widget
 function createUserWidget() {
     const existingWidget = document.querySelector('.user-widget');
     if (existingWidget) existingWidget.remove();
@@ -101,7 +107,7 @@ function createUserWidget() {
                 <div class="stat-icon">🔥</div>
                 <div class="stat-info">
                     <div class="stat-value">${userData.consecutiveDays}</div>
-                    <div class="stat-label">días</div>
+                    <div class="stat-label">days</div>
                 </div>
             </div>
             <div class="stat-divider"></div>
@@ -109,7 +115,7 @@ function createUserWidget() {
                 <div class="stat-icon">⭐</div>
                 <div class="stat-info">
                     <div class="stat-value">${userData.totalPoints}</div>
-                    <div class="stat-label">puntos</div>
+                    <div class="stat-label">points</div>
                 </div>
             </div>
         </div>
@@ -119,7 +125,7 @@ function createUserWidget() {
     wallpaper.insertBefore(widget, wallpaper.firstChild);
 }
 
-// Crear iconos de aplicaciones
+// Create app icons
 function createAppIcons() {
     appsGrid.innerHTML = '';
 
@@ -132,25 +138,25 @@ function createAppIcons() {
             <div class="name">${game.name}</div>
         `;
 
-        // Agregar evento de clic
+        // Add click event
         appIcon.addEventListener('click', () => openGame(game));
 
         appsGrid.appendChild(appIcon);
     });
 }
 
-// Configurar event listeners
+// Setup event listeners
 function setupEventListeners() {
     closeGameBtn.addEventListener('click', closeGame);
 
-    // Detectar cambios de tamaño de ventana
+    // Detect window size changes
     window.addEventListener('resize', () => {
         isDesktop = window.innerWidth >= 768;
         detectDeviceType();
     });
 }
 
-// Detectar tipo de dispositivo
+// Detect device type
 function detectDeviceType() {
     const deviceContainer = document.querySelector('.device-container');
 
@@ -169,7 +175,7 @@ function detectDeviceType() {
     }
 }
 
-// Abrir juego
+// Open game
 function openGame(game) {
     if (game.id.startsWith('coming-soon')) {
         showComingSoonMessage();
@@ -178,20 +184,20 @@ function openGame(game) {
 
     currentGame = game;
 
-    // Mostrar contenedor de juego
+    // Show game container
     gameContainer.classList.add('active');
 
-    // Cargar contenido del juego
+    // Load game content
     loadGameContent(game);
 
-    // En móvil, ocultar la pantalla principal usando visibilidad
+    // On mobile, hide home screen using visibility
     if (!isDesktop) {
         homeScreen.style.visibility = 'hidden';
         homeScreen.style.opacity = '0';
     }
 }
 
-// Cargar contenido del juego
+// Load game content
 function loadGameContent(game) {
     gameContent.innerHTML = '';
 
@@ -202,6 +208,9 @@ function loadGameContent(game) {
         case 'minesweeper':
             loadMinesweeperGame();
             break;
+        case 'combat':
+            loadCombatGame();
+            break;
         case 'settings':
             loadSettingsApp();
             break;
@@ -210,20 +219,20 @@ function loadGameContent(game) {
     }
 }
 
-// Cerrar juego
+// Close game
 function closeGame() {
     gameContainer.classList.remove('active');
     homeScreen.style.visibility = 'visible';
     homeScreen.style.opacity = '1';
     currentGame = null;
 
-    // Limpiar contenido del juego
+    // Clean up game content
     setTimeout(() => {
         gameContent.innerHTML = '';
     }, 300);
 }
 
-// Mostrar mensaje de "próximamente"
+// Show "coming soon" message
 function showComingSoonMessage() {
     const message = document.createElement('div');
     message.style.cssText = `
@@ -241,7 +250,7 @@ function showComingSoonMessage() {
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
     `;
-    message.textContent = '¡Próximamente disponible!';
+    message.textContent = 'Coming soon!';
 
     document.body.appendChild(message);
 
@@ -251,7 +260,7 @@ function showComingSoonMessage() {
 }
 
 
-// Función para establecer fondo de pantalla
+// Function to set wallpaper
 function setWallpaper(wallpaperId) {
     const wallpaper = wallpapers.find(w => w.id === wallpaperId);
     if (!wallpaper) return;
@@ -259,17 +268,17 @@ function setWallpaper(wallpaperId) {
     const wallpaperElement = document.querySelector('.wallpaper');
 
     if (wallpaper.image) {
-        // Usar imagen
+        // Use image
         wallpaperElement.style.backgroundImage = `url('${wallpaper.image}')`;
         wallpaperElement.style.backgroundSize = 'cover';
         wallpaperElement.style.backgroundPosition = 'center';
         wallpaperElement.style.backgroundRepeat = 'no-repeat';
     } else if (wallpaper.gradient) {
-        // Usar gradiente personalizado
+        // Use custom gradient
         wallpaperElement.style.backgroundImage = 'none';
         wallpaperElement.style.background = wallpaper.gradient;
     } else {
-        // Usar degradado por defecto
+        // Use default gradient
         wallpaperElement.style.backgroundImage = 'none';
         wallpaperElement.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
     }
@@ -277,14 +286,14 @@ function setWallpaper(wallpaperId) {
     currentWallpaper = wallpaperId;
 }
 
-// App de Ajustes
+// Settings App
 function loadSettingsApp() {
     gameContent.innerHTML = `
         <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%;">
-            <h2 style="text-align: center; margin-bottom: 30px; color: #fff;">⚙️ Ajustes</h2>
+            <h2 style="text-align: center; margin-bottom: 30px; color: #fff;">⚙️ Settings</h2>
 
             <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);">
-                <h3 style="margin-bottom: 15px; color: #fff; font-size: 18px;">Fondo de Pantalla</h3>
+                <h3 style="margin-bottom: 15px; color: #fff; font-size: 18px;">Wallpaper</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
                     ${wallpapers.map(wallpaper => `
                         <div style="display: flex; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 2px solid ${currentWallpaper === wallpaper.id ? '#4CAF50' : 'rgba(255, 255, 255, 0.1)'}; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;"
@@ -302,10 +311,10 @@ function loadSettingsApp() {
     `;
 }
 
-// Seleccionar fondo de pantalla
+// Select wallpaper
 function selectWallpaper(wallpaperId) {
     setWallpaper(wallpaperId);
-    // Recargar la app de ajustes para mostrar la selección actualizada
+    // Reload settings app to show updated selection
     loadSettingsApp();
 }
 
@@ -313,21 +322,21 @@ function loadPlaceholderGame(game) {
     gameContent.innerHTML = `
         <div style="text-align: center; color: #333;">
             <h2>${game.icon} ${game.name}</h2>
-            <p>¡Próximamente con IA!</p>
+            <p>Coming soon with AI!</p>
             <div style="margin-top: 20px; padding: 20px; background: #e0e0e0; border-radius: 10px;">
-                <p>Este juego estará disponible próximamente con inteligencia artificial.</p>
+                <p>This game will be available soon with artificial intelligence.</p>
             </div>
         </div>
     `;
 }
 
-// Función para agregar nuevos juegos dinámicamente
+// Function to dynamically add new games
 function addNewGame(gameData) {
     games.push(gameData);
     createAppIcons();
 }
 
-// Función para actualizar un juego existente
+// Function to update an existing game
 function updateGame(gameId, newData) {
     const gameIndex = games.findIndex(game => game.id === gameId);
     if (gameIndex !== -1) {
@@ -336,7 +345,7 @@ function updateGame(gameId, newData) {
     }
 }
 
-// Exportar funciones para uso futuro
+// Export functions for future use
 window.GameHub = {
     addNewGame,
     updateGame,

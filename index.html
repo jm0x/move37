@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Move37 games</title>
+    <title>Move37 Games</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,28 +12,29 @@
 <body>
     <div class="device-container">
 
-        <!-- Pantalla principal con iconos -->
+        <!-- Home screen with icons -->
         <div class="home-screen" id="home-screen">
             <div class="wallpaper">
                 <div class="apps-grid" id="apps-grid">
-                    <!-- Los iconos se generarán dinámicamente -->
+                    <!-- Icons will be generated dynamically -->
                 </div>
             </div>
         </div>
 
-        <!-- Contenedor de juegos -->
+        <!-- Game container -->
         <div class="game-container" id="game-container">
             <div class="game-header">
                 <button class="close-game" id="close-game">✕</button>
             </div>
             <div class="game-content" id="game-content">
-                <!-- El contenido del juego se cargará aquí -->
+                <!-- Game content will be loaded here -->
             </div>
         </div>
     </div>
 
     <script src="games/snake.js"></script>
     <script src="games/minesweeper.js"></script>
+    <script src="games/combat.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
