@@ -13,7 +13,6 @@ let snakeGame = {
     canvasSize: 400,
     touchStartX: 0,
     touchStartY: 0,
-    accelerometerActive: false,
     lastAccelerometerTime: 0
 };
 
@@ -37,16 +36,16 @@ function loadSnakeGame() {
             </div>
 
             <!-- Controles táctiles para móvil -->
-            <div id="mobileControls" style="display: none; margin-top: 25px;">
-                <div style="display: grid; grid-template-columns: repeat(3, 60px); gap: 10px; justify-content: center;">
+            <div id="mobileControls" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+                <div style="display: grid; grid-template-columns: repeat(3, 45px); gap: 6px; justify-content: center;">
                     <div></div>
-                    <button class="control-btn" data-direction="up" style="width: 60px; height: 60px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 10px; font-size: 24px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(10px);">↑</button>
+                    <button class="control-btn" data-direction="up" style="width: 45px; height: 45px; background: rgba(76, 175, 80, 0.15); color: rgba(76, 175, 80, 0.8); border: 1px solid rgba(76, 175, 80, 0.25); border-radius: 8px; font-size: 20px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px);">↑</button>
                     <div></div>
-                    <button class="control-btn" data-direction="left" style="width: 60px; height: 60px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 10px; font-size: 24px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(10px);">←</button>
+                    <button class="control-btn" data-direction="left" style="width: 45px; height: 45px; background: rgba(76, 175, 80, 0.15); color: rgba(76, 175, 80, 0.8); border: 1px solid rgba(76, 175, 80, 0.25); border-radius: 8px; font-size: 20px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px);">←</button>
                     <div></div>
-                    <button class="control-btn" data-direction="right" style="width: 60px; height: 60px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 10px; font-size: 24px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(10px);">→</button>
+                    <button class="control-btn" data-direction="right" style="width: 45px; height: 45px; background: rgba(76, 175, 80, 0.15); color: rgba(76, 175, 80, 0.8); border: 1px solid rgba(76, 175, 80, 0.25); border-radius: 8px; font-size: 20px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px);">→</button>
                     <div></div>
-                    <button class="control-btn" data-direction="down" style="width: 60px; height: 60px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 10px; font-size: 24px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(10px);">↓</button>
+                    <button class="control-btn" data-direction="down" style="width: 45px; height: 45px; background: rgba(76, 175, 80, 0.15); color: rgba(76, 175, 80, 0.8); border: 1px solid rgba(76, 175, 80, 0.25); border-radius: 8px; font-size: 20px; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px);">↓</button>
                     <div></div>
                 </div>
             </div>
@@ -70,7 +69,6 @@ function initializeSnakeGame() {
         mobileControls.style.display = 'block';
         setupMobileControls();
         setupTouchControls();
-        setupAccelerometerControls();
     } else {
         mobileControls.style.display = 'none';
         setupKeyboardControls();
@@ -164,61 +162,6 @@ function setupTouchControls() {
     });
 }
 
-// Configurar controles por acelerómetro
-function setupAccelerometerControls() {
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        // iOS 13+ requiere permiso explícito
-        DeviceOrientationEvent.requestPermission()
-            .then(permissionState => {
-                if (permissionState === 'granted') {
-                    startAccelerometer();
-                }
-            })
-            .catch(console.error);
-    } else if (window.DeviceOrientationEvent) {
-        // Android y navegadores que no requieren permiso
-        startAccelerometer();
-    }
-}
-
-function startAccelerometer() {
-    window.addEventListener('deviceorientation', handleOrientation, true);
-    snakeGame.accelerometerActive = true;
-}
-
-function handleOrientation(event) {
-    if (!snakeGame.gameRunning || !snakeGame.accelerometerActive) return;
-
-    // Limitar la frecuencia de actualización para evitar cambios muy rápidos
-    const currentTime = Date.now();
-    if (currentTime - snakeGame.lastAccelerometerTime < 200) return;
-
-    const beta = event.beta;   // Inclinación frontal-trasera (-180 a 180)
-    const gamma = event.gamma; // Inclinación izquierda-derecha (-90 a 90)
-
-    const threshold = 15; // Ángulo mínimo para detectar inclinación
-
-    // Priorizar el eje con mayor inclinación
-    if (Math.abs(gamma) > Math.abs(beta)) {
-        // Movimiento horizontal
-        if (gamma > threshold && snakeGame.direction !== 'left') {
-            snakeGame.nextDirection = 'right';
-            snakeGame.lastAccelerometerTime = currentTime;
-        } else if (gamma < -threshold && snakeGame.direction !== 'right') {
-            snakeGame.nextDirection = 'left';
-            snakeGame.lastAccelerometerTime = currentTime;
-        }
-    } else {
-        // Movimiento vertical
-        if (beta > threshold && snakeGame.direction !== 'up') {
-            snakeGame.nextDirection = 'down';
-            snakeGame.lastAccelerometerTime = currentTime;
-        } else if (beta < -threshold && snakeGame.direction !== 'down') {
-            snakeGame.nextDirection = 'up';
-            snakeGame.lastAccelerometerTime = currentTime;
-        }
-    }
-}
 
 // Iniciar el juego Snake
 function startSnakeGame() {

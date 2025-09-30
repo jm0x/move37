@@ -7,6 +7,12 @@ const games = [
         color: '#4CAF50'
     },
     {
+        id: 'minesweeper',
+        name: 'Buscaminas',
+        icon: '💣',
+        color: '#2196F3'
+    },
+    {
         id: 'settings',
         name: 'Ajustes',
         icon: '⚙️',
@@ -187,6 +193,9 @@ function loadGameContent(game) {
     switch (game.id) {
         case 'snake':
             loadSnakeGame();
+            break;
+        case 'minesweeper':
+            loadMinesweeperGame();
             break;
         case 'settings':
             loadSettingsApp();
