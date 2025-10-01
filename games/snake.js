@@ -18,8 +18,17 @@ let snakeGame = {
     keyboardHandler: null,
     touchStartHandler: null,
     touchEndHandler: null,
-    foodColors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'],
-    currentFoodColor: '#FF6B6B',
+    foodTypes: [
+        { color: '#4ECDC4', points: 5, weight: 50 },    // Turquesa - común (50%)
+        { color: '#45B7D1', points: 5, weight: 50 },    // Azul claro - común (50%)
+        { color: '#FFA07A', points: 10, weight: 30 },   // Naranja - poco común (30%)
+        { color: '#F7DC6F', points: 10, weight: 30 },   // Amarillo - poco común (30%)
+        { color: '#98D8C8', points: 15, weight: 15 },   // Verde agua - raro (15%)
+        { color: '#BB8FCE', points: 15, weight: 15 },   // Morado claro - raro (15%)
+        { color: '#FF6B6B', points: 25, weight: 5 },    // Rojo - muy raro (5%)
+        { color: '#FFD700', points: 50, weight: 2 }     // Dorado - épico (2%)
+    ],
+    currentFood: { color: '#4ECDC4', points: 5 },
     eatEffectParticles: []
 };
 
@@ -35,7 +44,7 @@ function initializeSnakeInContainer(gameArea, gameContainer) {
     let canvasSize = isMobile ? window.innerWidth : 450;
 
     // Ajustar cellSize para que quepa perfectamente
-    const cellSize = 18; // 450 / 18 = 25 celdas exactas
+    const cellSize = 24; // 450 / 24 = 18.75 celdas
 
     const gameOverModal = GameStyles.createResultModalHTML('gameOver', 'gameOverTitle', 'gameOverMessage', 'restartBtn', 'Restart');
 
@@ -206,6 +215,26 @@ function startSnakeGame() {
     snakeGame.gameLoop = setInterval(gameTick, 150);
 }
 
+// Seleccionar tipo de comida basado en probabilidades
+function selectFoodType() {
+    // Calcular peso total
+    const totalWeight = snakeGame.foodTypes.reduce((sum, type) => sum + type.weight, 0);
+
+    // Generar número aleatorio
+    let random = Math.random() * totalWeight;
+
+    // Seleccionar tipo basado en peso
+    for (let type of snakeGame.foodTypes) {
+        random -= type.weight;
+        if (random <= 0) {
+            return type;
+        }
+    }
+
+    // Fallback al primer tipo
+    return snakeGame.foodTypes[0];
+}
+
 // Generate random food
 function generateFood() {
     const gridSize = snakeGame.canvasSize / snakeGame.cellSize;
@@ -214,8 +243,8 @@ function generateFood() {
         y: Math.floor(Math.random() * gridSize)
     };
 
-    // Cambiar color de la comida aleatoriamente
-    snakeGame.currentFoodColor = snakeGame.foodColors[Math.floor(Math.random() * snakeGame.foodColors.length)];
+    // Seleccionar tipo de comida con probabilidad
+    snakeGame.currentFood = selectFoodType();
 
     // Ensure food doesn't appear on snake
     for (let segment of snakeGame.snake) {
@@ -283,7 +312,8 @@ function gameTick() {
 
     // Check if eating food
     if (head.x === snakeGame.food.x && head.y === snakeGame.food.y) {
-        snakeGame.score += 10;
+        // Sumar puntos según el tipo de comida
+        snakeGame.score += snakeGame.currentFood.points;
         updateScore();
 
         // Crear efecto de partículas cuando come
@@ -316,8 +346,8 @@ function drawGame() {
         );
     }
 
-    // Draw food con color cambiante
-    snakeGame.ctx.fillStyle = snakeGame.currentFoodColor;
+    // Draw food con color según tipo y puntos
+    snakeGame.ctx.fillStyle = snakeGame.currentFood.color;
     snakeGame.ctx.fillRect(
         snakeGame.food.x * snakeGame.cellSize + 2,
         snakeGame.food.y * snakeGame.cellSize + 2,
@@ -343,7 +373,7 @@ function createEatEffect(x, y) {
             vx: Math.cos(angle) * 3,
             vy: Math.sin(angle) * 3,
             life: 15,
-            color: snakeGame.currentFoodColor
+            color: snakeGame.currentFood.color
         });
     }
 }
