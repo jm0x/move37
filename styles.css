@@ -69,9 +69,6 @@ body {
 
 /* Widget de usuario */
 .user-widget {
-    position: absolute;
-    top: 20px;
-    right: 20px;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -80,7 +77,22 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.3);
     z-index: 10;
-    min-width: 180px;
+    /* Grid positioning - desktop (4x4) */
+    grid-column: 4 / 5;
+    grid-row: 1 / 3;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .user-widget {
+        /* Grid positioning - mobile (3x6) */
+        grid-column: 3 / 4;
+        grid-row: 1 / 3;
+    }
 }
 
 .widget-header {
@@ -143,90 +155,50 @@ body {
     background: rgba(255, 255, 255, 0.2);
 }
 
-@media (max-width: 768px) {
-    .user-widget {
-        top: 10px;
-        right: 10px;
-        min-width: 150px;
-        padding: 10px 12px;
-    }
-
-    .user-name {
-        font-size: 12px;
-    }
-
-    .stat-icon {
-        font-size: 18px;
-    }
-
-    .stat-value {
-        font-size: 14px;
-    }
-
-    .stat-label {
-        font-size: 9px;
-    }
-
-    .stat-divider {
-        height: 28px;
-    }
-}
-
-/* Ajustes para pantallas muy pequeñas */
-@media (max-width: 375px) {
-    .user-widget {
-        top: 8px;
-        right: 8px;
-        min-width: 140px;
-        padding: 8px 10px;
-        border-radius: 16px;
-    }
-
-    .user-name {
-        font-size: 11px;
-    }
-
-    .stat-icon {
-        font-size: 16px;
-    }
-
-    .stat-value {
-        font-size: 13px;
-    }
-
-    .stat-label {
-        font-size: 8px;
-    }
-
-    .stat-divider {
-        height: 26px;
-    }
-
-    .widget-stats {
-        gap: 8px;
-    }
-
-    .stat-item {
-        gap: 6px;
-    }
-}
 
 /* Grid de aplicaciones */
 .apps-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px 20px; /* gap vertical y horizontal explícitos */
-    padding: 160px 20px 20px;
-    height: calc(100% - 40px);
-    overflow-y: auto;
-    align-items: start; /* alinear items al inicio */
+    grid-template-rows: repeat(4, 1fr);
+    gap: 15px;
+    padding: 80px 20px 30px;
+    height: 100%;
+    overflow: hidden;
+    align-content: space-evenly;
+    position: relative;
 }
 
 @media (max-width: 768px) {
     .apps-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 20px 20px; /* gap vertical y horizontal iguales */
-        padding: 140px 20px 20px;
+        grid-template-rows: repeat(6, 1fr);
+        gap: 12px;
+        padding: 60px 20px 30px;
+    }
+}
+
+/* Dock background */
+.apps-grid::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc((100% - 80px - 30px) / 4 + 30px);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 25px 25px 0 0;
+    pointer-events: none;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .apps-grid::after {
+        height: calc((100% - 60px - 30px) / 6 + 30px);
     }
 }
 
@@ -236,16 +208,28 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
+    width: 100%;
+    height: 100%;
+    max-width: 80px;
+    max-height: 80px;
+    margin: 0 auto;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
-    margin: 0 auto;
+    z-index: 1;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Dock apps - última fila con transparencia especial */
+.app-icon.dock-app {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    align-self: center;
 }
 
 .app-icon:hover {

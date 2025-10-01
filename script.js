@@ -4,25 +4,43 @@ const games = [
         id: 'snake',
         name: 'Snake',
         icon: '🐍',
-        color: '#4CAF50'
+        color: '#4CAF50',
+        isDock: false
     },
     {
         id: 'minesweeper',
         name: 'Minesweeper',
         icon: '💣',
-        color: '#2196F3'
+        color: '#2196F3',
+        isDock: false
     },
     {
-        id: 'combat',
-        name: 'Combat',
-        icon: '🎯',
-        color: '#ff6b35'
+        id: 'pong',
+        name: 'Pong',
+        icon: '🏓',
+        color: '#FF9800',
+        isDock: false
+    },
+    // {
+    //     id: 'combat',
+    //     name: 'Combat',
+    //     icon: '🎯',
+    //     color: '#ff6b35',
+    //     isDock: false
+    // },
+    {
+        id: 'messages',
+        name: 'Messages',
+        icon: '💬',
+        color: '#34C759',
+        isDock: true
     },
     {
         id: 'settings',
         name: 'Settings',
         icon: '⚙️',
-        color: '#607D8B'
+        color: '#607D8B',
+        isDock: true
     }
 ];
 
@@ -79,8 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Main initialization function
 function initializeApp() {
-    createUserWidget();
     createAppIcons();
+    createUserWidget();
     setupEventListeners();
     detectDeviceType();
     setWallpaper(currentWallpaper);
@@ -121,17 +139,56 @@ function createUserWidget() {
         </div>
     `;
 
-    const wallpaper = document.querySelector('.wallpaper');
-    wallpaper.insertBefore(widget, wallpaper.firstChild);
+    appsGrid.appendChild(widget);
 }
 
 // Create app icons
 function createAppIcons() {
     appsGrid.innerHTML = '';
 
-    games.forEach((game, index) => {
+    // Separar apps regulares y dock
+    const regularApps = games.filter(game => !game.isDock);
+    const dockApps = games.filter(game => game.isDock);
+
+    // Calcular el número de filas según el dispositivo
+    const totalRows = isDesktop ? 4 : 6;
+    const totalCols = isDesktop ? 4 : 3;
+    const dockRow = totalRows;
+
+    // Añadir apps regulares
+    regularApps.forEach((game, index) => {
         const appIcon = document.createElement('div');
         appIcon.className = 'app-icon';
+
+        appIcon.innerHTML = `
+            <div class="icon">${game.icon}</div>
+            <div class="name">${game.name}</div>
+        `;
+
+        // Add click event
+        appIcon.addEventListener('click', () => openGame(game));
+
+        appsGrid.appendChild(appIcon);
+    });
+
+    // Calcular espacios vacíos antes del dock
+    const regularAppsCount = regularApps.length;
+    const widget2x1Spaces = 2; // El widget ocupa 2 espacios (2x1, es decir 2 filas x 1 columna)
+    const availableSpacesBeforeDock = (totalCols * (totalRows - 1)) - widget2x1Spaces;
+    const emptySpaces = availableSpacesBeforeDock - regularAppsCount;
+
+    // Añadir espacios vacíos
+    for (let i = 0; i < emptySpaces; i++) {
+        const emptySpace = document.createElement('div');
+        emptySpace.className = 'app-icon-spacer';
+        emptySpace.style.visibility = 'hidden';
+        appsGrid.appendChild(emptySpace);
+    }
+
+    // Añadir apps del dock
+    dockApps.forEach((game) => {
+        const appIcon = document.createElement('div');
+        appIcon.className = 'app-icon dock-app';
 
         appIcon.innerHTML = `
             <div class="icon">${game.icon}</div>
@@ -151,8 +208,15 @@ function setupEventListeners() {
 
     // Detect window size changes
     window.addEventListener('resize', () => {
+        const wasDesktop = isDesktop;
         isDesktop = window.innerWidth >= 768;
         detectDeviceType();
+
+        // Recrear el grid si cambia el tipo de dispositivo
+        if (wasDesktop !== isDesktop) {
+            createAppIcons();
+            createUserWidget();
+        }
     });
 }
 
@@ -208,11 +272,17 @@ function loadGameContent(game) {
         case 'minesweeper':
             loadMinesweeperGame();
             break;
+        case 'pong':
+            loadPongGame();
+            break;
         case 'combat':
             loadCombatGame();
             break;
         case 'settings':
             loadSettingsApp();
+            break;
+        case 'messages':
+            loadMessagesApp();
             break;
         default:
             loadPlaceholderGame(game);
@@ -316,6 +386,32 @@ function selectWallpaper(wallpaperId) {
     setWallpaper(wallpaperId);
     // Reload settings app to show updated selection
     loadSettingsApp();
+}
+
+// Messages App
+function loadMessagesApp() {
+    gameContent.innerHTML = `
+        <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
+            <div style="text-align: center;">
+                <div style="font-size: 60px; margin-bottom: 20px;">💬</div>
+                <h2 style="margin-bottom: 10px;">Messages</h2>
+                <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
+            </div>
+        </div>
+    `;
+}
+
+// Pong Game - Placeholder
+function loadPongGame() {
+    gameContent.innerHTML = `
+        <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
+            <div style="text-align: center;">
+                <div style="font-size: 60px; margin-bottom: 20px;">🏓</div>
+                <h2 style="margin-bottom: 10px;">Pong</h2>
+                <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
+            </div>
+        </div>
+    `;
 }
 
 function loadPlaceholderGame(game) {
