@@ -38,18 +38,18 @@ function initializeSnakeInContainer(gameArea, gameContainer) {
 
     const isMobile = window.innerWidth < 768;
 
-    // Ajustar cellSize para que quepa perfectamente
-    const cellSize = 24;
-
-    // El canvas debe ser múltiplo exacto de cellSize tanto en móvil como desktop
+    let cellSize;
     let canvasSize;
+
     if (isMobile) {
+        // Móvil: canvas = 100vw, calcular cellSize para tener ~18 celdas
         const screenWidth = window.innerWidth;
-        canvasSize = Math.floor(screenWidth / cellSize) * cellSize;
+        canvasSize = screenWidth;
+        cellSize = Math.floor(screenWidth / 18); // ~18 celdas de ancho
     } else {
-        // Desktop: ajustar 450 al múltiplo más cercano de cellSize
-        // 450 / 24 = 18.75, entonces usamos 18 * 24 = 432
-        canvasSize = Math.floor(450 / cellSize) * cellSize;
+        // Desktop: cellSize fijo de 24px, canvas = 432px (18 celdas)
+        cellSize = 24;
+        canvasSize = 432;
     }
 
     const gameOverModal = GameStyles.createResultModalHTML('gameOver', 'gameOverTitle', 'gameOverMessage', 'restartBtn', 'Restart');
