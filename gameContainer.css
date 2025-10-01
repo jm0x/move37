@@ -40,16 +40,18 @@
     }
 }
 
-/* Móvil - posicionar contenedor ligeramente hacia arriba */
+/* Móvil - centrar en la zona de apps (excluyendo el dock) */
 @media (max-width: 767px) {
     .game-container-custom {
         display: flex;
-        align-items: flex-start;
-        justify-content: center;
+        align-items: center;
+        justify-content: flex-start;
         flex-direction: column;
         background: transparent;
         pointer-events: none; /* Permitir que los clicks pasen a través del fondo transparente */
-        padding-top: 10vh; /* Separación desde arriba */
+        /* Centrar en la zona de apps: desde 40px hasta (100vh - 120px) */
+        /* Centro = 40px + (100vh - 40px - 120px) / 2 = 40px + (100vh - 160px) / 2 */
+        padding-top: calc(40px + (100vh - 160px - 100vw) / 2);
     }
 
     /* Pero permitir clicks en el contenido del juego */
