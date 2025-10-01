@@ -13,16 +13,52 @@ let snakeGame = {
     canvasSize: 400,
     touchStartX: 0,
     touchStartY: 0,
-    lastAccelerometerTime: 0
+    lastAccelerometerTime: 0,
+    gameContainer: null,
+    keyboardHandler: null,
+    touchStartHandler: null,
+    touchEndHandler: null,
+    foodColors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'],
+    currentFoodColor: '#FF6B6B',
+    eatEffectParticles: []
 };
 
-// Load Snake game interface
+// Nueva función para usar con GameContainer
+function initializeSnakeInContainer(gameArea, gameContainer) {
+    snakeGame.gameContainer = gameContainer;
+
+    const isMobile = window.innerWidth < 768;
+
+    // El canvas debe ocupar EXACTAMENTE el área de juego
+    // En desktop: gameArea es 450x450
+    // En móvil: gameArea es 100vw x 100vw
+    let canvasSize = isMobile ? window.innerWidth : 450;
+
+    // Ajustar cellSize para que quepa perfectamente
+    const cellSize = 18; // 450 / 18 = 25 celdas exactas
+
+    const gameOverModal = GameStyles.createResultModalHTML('gameOver', 'gameOverTitle', 'gameOverMessage', 'restartBtn', 'Restart');
+
+    gameArea.innerHTML = GameStyles.createGameAreaHTML(canvasSize, 'snakeCanvas', gameOverModal);
+
+    // Configurar contenido del modal de Game Over
+    setTimeout(() => {
+        document.getElementById('gameOverTitle').innerHTML = '<span style="color: #ff4444;">Game Over!</span>';
+        document.getElementById('gameOverMessage').innerHTML = 'Final Score: <span id="finalScore" style="color: white; font-weight: 600;">0</span>';
+    }, 0);
+
+    // Actualizar cellSize en el objeto del juego
+    snakeGame.cellSize = cellSize;
+
+    initializeSnakeGame();
+}
+
+// Load Snake game interface (legacy - mantener para compatibilidad)
 function loadSnakeGame() {
     const gameContent = document.getElementById('game-content');
     const isMobile = window.innerWidth < 768;
     const cellSize = 20;
     let desiredSize = isMobile ? Math.min(window.innerWidth - 40, 400) : 400;
-    // Ensure size is a multiple of cellSize
     const canvasSize = Math.floor(desiredSize / cellSize) * cellSize;
 
     gameContent.innerHTML = `
@@ -43,7 +79,6 @@ function loadSnakeGame() {
         </div>
     `;
 
-    // Initialize Snake game
     initializeSnakeGame();
 }
 
@@ -69,7 +104,12 @@ function initializeSnakeGame() {
 
 // Setup keyboard controls
 function setupKeyboardControls() {
-    document.addEventListener('keydown', (e) => {
+    // Remover event listener anterior si existe
+    if (snakeGame.keyboardHandler) {
+        document.removeEventListener('keydown', snakeGame.keyboardHandler);
+    }
+
+    snakeGame.keyboardHandler = (e) => {
         if (!snakeGame.gameRunning) return;
 
         switch(e.key) {
@@ -86,7 +126,17 @@ function setupKeyboardControls() {
                 if (snakeGame.direction !== 'left') snakeGame.nextDirection = 'right';
                 break;
         }
-    });
+    };
+
+    document.addEventListener('keydown', snakeGame.keyboardHandler);
+
+    // Limpiar al cerrar el contenedor
+    window.addEventListener('gameContainerClosing', () => {
+        if (snakeGame.keyboardHandler) {
+            document.removeEventListener('keydown', snakeGame.keyboardHandler);
+        }
+        cleanupSnakeGame();
+    }, { once: true });
 }
 
 // Setup touch swipe controls
@@ -164,6 +214,9 @@ function generateFood() {
         y: Math.floor(Math.random() * gridSize)
     };
 
+    // Cambiar color de la comida aleatoriamente
+    snakeGame.currentFoodColor = snakeGame.foodColors[Math.floor(Math.random() * snakeGame.foodColors.length)];
+
     // Ensure food doesn't appear on snake
     for (let segment of snakeGame.snake) {
         if (segment.x === snakeGame.food.x && segment.y === snakeGame.food.y) {
@@ -175,7 +228,15 @@ function generateFood() {
 
 // Update score
 function updateScore() {
-    document.getElementById('score').textContent = snakeGame.score;
+    const scoreElement = document.getElementById('score');
+    if (scoreElement) {
+        scoreElement.textContent = snakeGame.score;
+    }
+
+    // Actualizar score en GameContainer si está disponible
+    if (snakeGame.gameContainer) {
+        snakeGame.gameContainer.updateScore(snakeGame.score);
+    }
 }
 
 // Main game loop
@@ -224,6 +285,10 @@ function gameTick() {
     if (head.x === snakeGame.food.x && head.y === snakeGame.food.y) {
         snakeGame.score += 10;
         updateScore();
+
+        // Crear efecto de partículas cuando come
+        createEatEffect(snakeGame.food.x, snakeGame.food.y);
+
         generateFood();
     } else {
         snakeGame.snake.pop();
@@ -239,8 +304,8 @@ function drawGame() {
     snakeGame.ctx.fillStyle = '#000';
     snakeGame.ctx.fillRect(0, 0, snakeGame.canvasSize, snakeGame.canvasSize);
 
-    // Draw snake
-    snakeGame.ctx.fillStyle = '#4CAF50';
+    // Draw snake (morada)
+    snakeGame.ctx.fillStyle = '#9B59B6'; // Morado
     for (let i = 0; i < snakeGame.snake.length; i++) {
         const segment = snakeGame.snake[i];
         snakeGame.ctx.fillRect(
@@ -251,14 +316,60 @@ function drawGame() {
         );
     }
 
-    // Draw food
-    snakeGame.ctx.fillStyle = '#ff4444';
+    // Draw food con color cambiante
+    snakeGame.ctx.fillStyle = snakeGame.currentFoodColor;
     snakeGame.ctx.fillRect(
         snakeGame.food.x * snakeGame.cellSize + 2,
         snakeGame.food.y * snakeGame.cellSize + 2,
         snakeGame.cellSize - 4,
         snakeGame.cellSize - 4
     );
+
+    // Draw particles effect
+    drawEatEffect();
+}
+
+// Crear efecto de partículas cuando come
+function createEatEffect(x, y) {
+    const centerX = x * snakeGame.cellSize + snakeGame.cellSize / 2;
+    const centerY = y * snakeGame.cellSize + snakeGame.cellSize / 2;
+
+    // Crear 8 partículas
+    for (let i = 0; i < 8; i++) {
+        const angle = (Math.PI * 2 * i) / 8;
+        snakeGame.eatEffectParticles.push({
+            x: centerX,
+            y: centerY,
+            vx: Math.cos(angle) * 3,
+            vy: Math.sin(angle) * 3,
+            life: 15,
+            color: snakeGame.currentFoodColor
+        });
+    }
+}
+
+// Dibujar efecto de partículas
+function drawEatEffect() {
+    for (let i = snakeGame.eatEffectParticles.length - 1; i >= 0; i--) {
+        const particle = snakeGame.eatEffectParticles[i];
+
+        // Actualizar posición
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.life--;
+
+        // Dibujar partícula
+        const alpha = particle.life / 15;
+        snakeGame.ctx.fillStyle = particle.color;
+        snakeGame.ctx.globalAlpha = alpha;
+        snakeGame.ctx.fillRect(particle.x - 2, particle.y - 2, 4, 4);
+        snakeGame.ctx.globalAlpha = 1;
+
+        // Eliminar si murió
+        if (particle.life <= 0) {
+            snakeGame.eatEffectParticles.splice(i, 1);
+        }
+    }
 }
 
 // Game Over
@@ -266,6 +377,24 @@ function snakeGameOver() {
     snakeGame.gameRunning = false;
     clearInterval(snakeGame.gameLoop);
 
-    document.getElementById('finalScore').textContent = snakeGame.score;
-    document.getElementById('gameOver').style.display = 'block';
+    const finalScoreElement = document.getElementById('finalScore');
+    if (finalScoreElement) {
+        finalScoreElement.textContent = snakeGame.score;
+    }
+
+    const gameOverElement = document.getElementById('gameOver');
+    if (gameOverElement) {
+        gameOverElement.style.display = 'block';
+    }
+}
+
+// Cleanup function
+function cleanupSnakeGame() {
+    snakeGame.gameRunning = false;
+    if (snakeGame.gameLoop) {
+        clearInterval(snakeGame.gameLoop);
+    }
+    if (snakeGame.keyboardHandler) {
+        document.removeEventListener('keydown', snakeGame.keyboardHandler);
+    }
 }

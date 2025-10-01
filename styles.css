@@ -84,7 +84,7 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 @media (max-width: 768px) {
@@ -99,23 +99,58 @@ body {
 }
 
 .widget-header {
-    margin-bottom: 8px;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 8px;
 }
 
 @media (max-width: 768px) {
     .widget-header {
+        padding-bottom: 4px;
         margin-bottom: 6px;
-        padding-bottom: 6px;
+    }
+}
+
+.app-name {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .app-name {
+        font-size: 16px;
+    }
+}
+
+.widget-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .widget-body {
+        gap: 6px;
     }
 }
 
 .user-name {
-    color: white;
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
     font-weight: 600;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .user-name {
+        font-size: 12px;
+    }
 }
 
 .widget-stats {
@@ -186,6 +221,53 @@ body {
 @media (max-width: 768px) {
     .stat-divider {
         height: 24px;
+    }
+}
+
+/* AI Message - parte inferior del widget */
+.ai-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+}
+
+@media (max-width: 768px) {
+    .ai-message {
+        padding: 8px;
+        gap: 8px;
+    }
+}
+
+.ai-icon {
+    font-size: 28px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .ai-icon {
+        font-size: 24px;
+    }
+}
+
+.ai-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.4;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .ai-text {
+        font-size: 10px;
     }
 }
 

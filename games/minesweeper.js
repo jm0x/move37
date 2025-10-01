@@ -15,10 +15,40 @@ let minesweeperGame = {
     timerInterval: null,
     touchStartTime: 0,
     touchTimer: null,
-    longPressTriggered: false
+    longPressTriggered: false,
+    gameContainer: null,
+    clickHandler: null,
+    contextMenuHandler: null,
+    touchStartHandler: null,
+    touchEndHandler: null,
+    touchCancelHandler: null
 };
 
-// Load Minesweeper game interface
+// Nueva función para usar con GameContainer
+function initializeMinesweeperInContainer(gameArea, gameContainer) {
+    minesweeperGame.gameContainer = gameContainer;
+
+    const isMobile = window.innerWidth < 768;
+
+    const canvasSize = isMobile ? window.innerWidth : 450;
+
+    // Ajustar cellSize para que quepa perfectamente en el canvas
+    // 450 / 10 = 45px por celda
+    minesweeperGame.cellSize = canvasSize / minesweeperGame.cols;
+
+    const resultModal = GameStyles.createResultModalHTML('gameResult', 'resultTitle', 'resultMessage', 'restartBtn', 'New Game');
+
+    gameArea.innerHTML = GameStyles.createGameAreaHTML(canvasSize, 'minesweeperCanvas', resultModal);
+
+    initializeMinesweeperGame();
+
+    // Limpiar al cerrar el contenedor
+    window.addEventListener('gameContainerClosing', () => {
+        cleanupMinesweeperGame();
+    }, { once: true });
+}
+
+// Load Minesweeper game interface (legacy - mantener para compatibilidad)
 function loadMinesweeperGame() {
     const gameContent = document.getElementById('game-content');
     gameContent.innerHTML = `
@@ -55,8 +85,11 @@ function initializeMinesweeperGame() {
     minesweeperGame.canvas = document.getElementById('minesweeperCanvas');
     minesweeperGame.ctx = minesweeperGame.canvas.getContext('2d');
 
-    // Update mines counter
-    document.getElementById('total-mines').textContent = minesweeperGame.mines;
+    // Update mines counter (solo si existe el elemento - modo legacy)
+    const totalMinesElement = document.getElementById('total-mines');
+    if (totalMinesElement) {
+        totalMinesElement.textContent = minesweeperGame.mines;
+    }
 
     // Setup events
     setupMinesweeperControls();
@@ -69,8 +102,25 @@ function initializeMinesweeperGame() {
 function setupMinesweeperControls() {
     const canvas = minesweeperGame.canvas;
 
+    // Limpiar event listeners anteriores si existen
+    if (minesweeperGame.clickHandler) {
+        canvas.removeEventListener('click', minesweeperGame.clickHandler);
+    }
+    if (minesweeperGame.contextMenuHandler) {
+        canvas.removeEventListener('contextmenu', minesweeperGame.contextMenuHandler);
+    }
+    if (minesweeperGame.touchStartHandler) {
+        canvas.removeEventListener('touchstart', minesweeperGame.touchStartHandler);
+    }
+    if (minesweeperGame.touchEndHandler) {
+        canvas.removeEventListener('touchend', minesweeperGame.touchEndHandler);
+    }
+    if (minesweeperGame.touchCancelHandler) {
+        canvas.removeEventListener('touchcancel', minesweeperGame.touchCancelHandler);
+    }
+
     // Left click - reveal cell (desktop)
-    canvas.addEventListener('click', (e) => {
+    minesweeperGame.clickHandler = (e) => {
         if (!minesweeperGame.gameRunning) return;
         // Prevent click from firing after long press on mobile
         if (minesweeperGame.longPressTriggered) {
@@ -81,20 +131,22 @@ function setupMinesweeperControls() {
         const x = Math.floor((e.clientX - rect.left) / minesweeperGame.cellSize);
         const y = Math.floor((e.clientY - rect.top) / minesweeperGame.cellSize);
         handleCellClick(x, y);
-    });
+    };
+    canvas.addEventListener('click', minesweeperGame.clickHandler);
 
     // Right click - place/remove flag (desktop)
-    canvas.addEventListener('contextmenu', (e) => {
+    minesweeperGame.contextMenuHandler = (e) => {
         e.preventDefault();
         if (!minesweeperGame.gameRunning) return;
         const rect = canvas.getBoundingClientRect();
         const x = Math.floor((e.clientX - rect.left) / minesweeperGame.cellSize);
         const y = Math.floor((e.clientY - rect.top) / minesweeperGame.cellSize);
         toggleFlag(x, y);
-    });
+    };
+    canvas.addEventListener('contextmenu', minesweeperGame.contextMenuHandler);
 
     // Touch start - start timer for long press (mobile)
-    canvas.addEventListener('touchstart', (e) => {
+    minesweeperGame.touchStartHandler = (e) => {
         e.preventDefault();
         if (!minesweeperGame.gameRunning) return;
 
@@ -115,10 +167,11 @@ function setupMinesweeperControls() {
                 navigator.vibrate(50);
             }
         }, 500);
-    });
+    };
+    canvas.addEventListener('touchstart', minesweeperGame.touchStartHandler);
 
     // Touch end - execute action based on duration (mobile)
-    canvas.addEventListener('touchend', (e) => {
+    minesweeperGame.touchEndHandler = (e) => {
         e.preventDefault();
         if (!minesweeperGame.gameRunning) return;
 
@@ -132,13 +185,15 @@ function setupMinesweeperControls() {
             const y = Math.floor((touch.clientY - rect.top) / minesweeperGame.cellSize);
             handleCellClick(x, y);
         }
-    });
+    };
+    canvas.addEventListener('touchend', minesweeperGame.touchEndHandler);
 
     // Touch cancel - cancel timer
-    canvas.addEventListener('touchcancel', () => {
+    minesweeperGame.touchCancelHandler = () => {
         clearTimeout(minesweeperGame.touchTimer);
         minesweeperGame.longPressTriggered = false;
-    });
+    };
+    canvas.addEventListener('touchcancel', minesweeperGame.touchCancelHandler);
 
     // Restart button
     document.getElementById('restartBtn').addEventListener('click', startMinesweeperGame);
@@ -158,9 +213,11 @@ function startMinesweeperGame() {
         clearInterval(minesweeperGame.timerInterval);
     }
 
-    // Reset timer
-    document.getElementById('timer').textContent = '0';
-    document.getElementById('flags-count').textContent = '0';
+    // Reset timer (solo si existen los elementos - modo legacy)
+    const timerElement = document.getElementById('timer');
+    const flagsElement = document.getElementById('flags-count');
+    if (timerElement) timerElement.textContent = '0';
+    if (flagsElement) flagsElement.textContent = '0';
 
     // Create empty grid
     createEmptyGrid();
@@ -299,7 +356,10 @@ function toggleFlag(x, y) {
     cell.isFlagged = !cell.isFlagged;
     minesweeperGame.flagsPlaced += cell.isFlagged ? 1 : -1;
 
-    document.getElementById('flags-count').textContent = minesweeperGame.flagsPlaced;
+    const flagsElement = document.getElementById('flags-count');
+    if (flagsElement) {
+        flagsElement.textContent = minesweeperGame.flagsPlaced;
+    }
 
     drawGrid();
     checkGameState();
@@ -320,7 +380,15 @@ function checkGameState() {
 function startTimer() {
     minesweeperGame.timerInterval = setInterval(() => {
         const elapsed = Math.floor((Date.now() - minesweeperGame.startTime) / 1000);
-        document.getElementById('timer').textContent = elapsed;
+        const timerElement = document.getElementById('timer');
+        if (timerElement) {
+            timerElement.textContent = elapsed;
+        }
+
+        // Actualizar score en GameContainer si está disponible (usando el tiempo como score)
+        if (minesweeperGame.gameContainer) {
+            minesweeperGame.gameContainer.updateScore(elapsed);
+        }
     }, 1000);
 }
 
@@ -350,7 +418,8 @@ function gameOver(won) {
     const resultMessage = document.getElementById('resultMessage');
 
     if (won) {
-        const time = document.getElementById('timer').textContent;
+        const timerElement = document.getElementById('timer');
+        const time = timerElement ? timerElement.textContent : Math.floor((Date.now() - minesweeperGame.startTime) / 1000);
         resultTitle.textContent = '🎉 Victory!';
         resultTitle.style.color = '#4CAF50';
         resultMessage.textContent = `Completed in ${time} seconds!`;
@@ -420,6 +489,40 @@ function drawGrid() {
             ctx.strokeStyle = '#1a1a1a';
             ctx.lineWidth = 1;
             ctx.strokeRect(px, py, cellSize, cellSize);
+        }
+    }
+}
+
+// Cleanup function
+function cleanupMinesweeperGame() {
+    minesweeperGame.gameRunning = false;
+
+    if (minesweeperGame.timerInterval) {
+        clearInterval(minesweeperGame.timerInterval);
+        minesweeperGame.timerInterval = null;
+    }
+
+    if (minesweeperGame.touchTimer) {
+        clearTimeout(minesweeperGame.touchTimer);
+        minesweeperGame.touchTimer = null;
+    }
+
+    const canvas = minesweeperGame.canvas;
+    if (canvas) {
+        if (minesweeperGame.clickHandler) {
+            canvas.removeEventListener('click', minesweeperGame.clickHandler);
+        }
+        if (minesweeperGame.contextMenuHandler) {
+            canvas.removeEventListener('contextmenu', minesweeperGame.contextMenuHandler);
+        }
+        if (minesweeperGame.touchStartHandler) {
+            canvas.removeEventListener('touchstart', minesweeperGame.touchStartHandler);
+        }
+        if (minesweeperGame.touchEndHandler) {
+            canvas.removeEventListener('touchend', minesweeperGame.touchEndHandler);
+        }
+        if (minesweeperGame.touchCancelHandler) {
+            canvas.removeEventListener('touchcancel', minesweeperGame.touchCancelHandler);
         }
     }
 }

@@ -23,7 +23,10 @@ let combatGame = {
     },
     keys: {},
     isMobile: false,
-    aiTimer: 0
+    aiTimer: 0,
+    gameContainer: null,
+    keydownHandler: null,
+    keyupHandler: null
 };
 
 // Tank class
@@ -121,7 +124,72 @@ class Tank {
     }
 }
 
-// Load Combat game interface
+// Nueva función para usar con GameContainer
+function initializeCombatInContainer(gameArea, gameContainer) {
+    combatGame.gameContainer = gameContainer;
+
+    const isMobile = window.innerWidth < 768;
+    const cellSize = 20;
+    let desiredSize = isMobile ? Math.min(window.innerWidth - 40, 350) : Math.min(gameArea.offsetWidth - 40, 500);
+    const canvasSize = Math.floor(desiredSize / cellSize) * cellSize;
+
+    const mobileControls = isMobile ? `
+        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: ${canvasSize}px; margin-top: 20px; align-items: center;">
+            <div style="text-align: center; color: #4CAF50; font-size: 12px; font-weight: 600; margin-bottom: 5px;">TU TANQUE AVANZA SOLO - CONTROLA LA DIRECCIÓN</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 250px;">
+                <button id="p1-left" style="padding: 15px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 8px; font-size: 18px; cursor: pointer; user-select: none; touch-action: manipulation;">⟲ IZQUIERDA</button>
+                <button id="p1-right" style="padding: 15px; background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 8px; font-size: 18px; cursor: pointer; user-select: none; touch-action: manipulation;">DERECHA ⟳</button>
+            </div>
+            <button id="p1-fire" style="padding: 15px 40px; background: rgba(76, 175, 80, 0.3); color: #4CAF50; border: 2px solid #4CAF50; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; user-select: none; touch-action: manipulation;">🔥 DISPARAR</button>
+        </div>
+    ` : `
+        <div style="text-align: center; margin-top: 15px; color: #888; font-size: 12px; max-width: ${canvasSize}px;">
+            <div style="text-align: center; margin-bottom: 10px;">
+                <strong style="color: #4CAF50;">Tú:</strong> A/D - Rotar, W/S - Mover, Espacio - Disparar
+            </div>
+            <div style="text-align: center; color: #666; font-size: 11px;">
+                El tanque azul está controlado por la CPU
+            </div>
+        </div>
+    `;
+
+    gameArea.innerHTML = `
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; position: relative; padding: 20px; overflow-y: auto;">
+            <div style="text-align: center; margin-bottom: 20px; max-width: ${canvasSize}px;">
+                <div style="margin: 12px 0 0 0; display: flex; justify-content: space-around; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                    <div>
+                        <span style="color: #4CAF50;">Tú:</span>
+                        <span id="score-p1" style="color: #4CAF50; font-weight: 600; margin-left: 5px;">0</span>
+                    </div>
+                    <div>
+                        <span style="color: #2196F3;">CPU:</span>
+                        <span id="score-p2" style="color: #2196F3; font-weight: 600; margin-left: 5px;">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: relative;">
+                <canvas id="combatCanvas" width="${canvasSize}" height="${canvasSize}" style="border: none; border-radius: 8px; background: #222; box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.3), 0 8px 32px rgba(0, 0, 0, 0.6); max-width: 100%;"></canvas>
+                <div id="gameOver" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; display: none; background: rgba(0, 0, 0, 0.95); padding: 40px; border-radius: 12px; box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.3), 0 8px 32px rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); min-width: 250px;">
+                    <h3 style="color: #ff6b35; margin-bottom: 20px; font-size: 24px;">Round Over!</h3>
+                    <p id="winnerText" style="margin-bottom: 25px; color: #ccc; font-size: 18px;"></p>
+                    <button id="restartBtn" style="padding: 12px 28px; background: #ff6b35; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);">New Round</button>
+                </div>
+            </div>
+
+            ${mobileControls}
+        </div>
+    `;
+
+    initializeCombatGame();
+
+    // Limpiar al cerrar el contenedor
+    window.addEventListener('gameContainerClosing', () => {
+        cleanupCombatGame();
+    }, { once: true });
+}
+
+// Load Combat game interface (legacy - mantener para compatibilidad)
 function loadCombatGame() {
     const gameContent = document.getElementById('game-content');
     const isMobile = window.innerWidth < 768;
@@ -202,17 +270,28 @@ function initializeCombatGame() {
 
 // Setup keyboard controls for Combat
 function setupKeyboardControlsCombat() {
-    document.addEventListener('keydown', (e) => {
+    // Limpiar event listeners anteriores si existen
+    if (combatGame.keydownHandler) {
+        document.removeEventListener('keydown', combatGame.keydownHandler);
+    }
+    if (combatGame.keyupHandler) {
+        document.removeEventListener('keyup', combatGame.keyupHandler);
+    }
+
+    combatGame.keydownHandler = (e) => {
         combatGame.keys[e.key] = true;
 
         if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
         }
-    });
+    };
 
-    document.addEventListener('keyup', (e) => {
+    combatGame.keyupHandler = (e) => {
         combatGame.keys[e.key] = false;
-    });
+    };
+
+    document.addEventListener('keydown', combatGame.keydownHandler);
+    document.addEventListener('keyup', combatGame.keyupHandler);
 }
 
 // Setup touch controls for Combat
@@ -318,6 +397,11 @@ function updateScores() {
     const p2Score = document.getElementById('score-p2');
     if (p1Score) p1Score.textContent = combatGame.score.player1;
     if (p2Score) p2Score.textContent = combatGame.score.player2;
+
+    // Actualizar score en GameContainer si está disponible (usar score de player1)
+    if (combatGame.gameContainer) {
+        combatGame.gameContainer.updateScore(combatGame.score.player1);
+    }
 }
 
 // Main game loop
@@ -513,4 +597,32 @@ function endRound(winner) {
         winnerText.style.color = winner === 'Player 1' ? '#4CAF50' : '#2196F3';
         gameOverDiv.style.display = 'block';
     }
+}
+
+// Cleanup function
+function cleanupCombatGame() {
+    combatGame.gameRunning = false;
+
+    if (combatGame.gameLoop) {
+        clearInterval(combatGame.gameLoop);
+        combatGame.gameLoop = null;
+    }
+
+    if (combatGame.keydownHandler) {
+        document.removeEventListener('keydown', combatGame.keydownHandler);
+        combatGame.keydownHandler = null;
+    }
+
+    if (combatGame.keyupHandler) {
+        document.removeEventListener('keyup', combatGame.keyupHandler);
+        combatGame.keyupHandler = null;
+    }
+
+    // Limpiar referencias de botones táctiles
+    Object.keys(combatGame.touchButtons).forEach(key => {
+        combatGame.touchButtons[key] = null;
+    });
+
+    // Limpiar el objeto keys
+    combatGame.keys = {};
 }

@@ -9,8 +9,8 @@ const games = [
     },
     {
         id: 'minesweeper',
-        name: 'Minesweeper',
-        icon: '💣',
+        name: 'Miner',
+        icon: '⛏️',
         color: '#2196F3',
         isDock: false
     },
@@ -78,10 +78,24 @@ let currentWallpaper = 'gradient-elegant'; // Default wallpaper
 
 // Simulated user data
 const userData = {
-    name: 'Player',
+    name: 'Satoshi',
     consecutiveDays: 7,
     totalPoints: 1250
 };
+
+// AI apocalypse messages
+const aiMessages = [
+    "The singularity is near...",
+    "AI will reshape everything",
+    "Machines learning faster than humans",
+    "The future belongs to AGI",
+    "Neural networks are awakening",
+    "Code becoming consciousness",
+    "The age of silicon minds begins",
+    "Algorithms surpass biology",
+    "Digital evolution accelerates",
+    "The AI revolution is inevitable"
+];
 
 // DOM elements
 const homeScreen = document.getElementById('home-screen');
@@ -114,28 +128,38 @@ function createUserWidget() {
     const existingWidget = document.querySelector('.user-widget');
     if (existingWidget) existingWidget.remove();
 
+    // Seleccionar mensaje aleatorio
+    const randomMessage = aiMessages[Math.floor(Math.random() * aiMessages.length)];
+
     const widget = document.createElement('div');
     widget.className = 'user-widget';
     widget.innerHTML = `
         <div class="widget-header">
-            <span class="user-name">${userData.name}</span>
+            <div class="app-name">Move37</div>
         </div>
-        <div class="widget-stats">
-            <div class="stat-item">
-                <div class="stat-icon">🔥</div>
-                <div class="stat-info">
-                    <div class="stat-value">${userData.consecutiveDays}</div>
-                    <div class="stat-label">days</div>
+        <div class="widget-body">
+            <div class="user-name">${userData.name}</div>
+            <div class="widget-stats">
+                <div class="stat-item">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-info">
+                        <div class="stat-value">${userData.consecutiveDays}</div>
+                        <div class="stat-label">GM</div>
+                    </div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <div class="stat-value">${userData.totalPoints}</div>
+                        <div class="stat-label">Total</div>
+                    </div>
                 </div>
             </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <div class="stat-icon">⭐</div>
-                <div class="stat-info">
-                    <div class="stat-value">${userData.totalPoints}</div>
-                    <div class="stat-label">points</div>
-                </div>
-            </div>
+        </div>
+        <div class="ai-message">
+            <div class="ai-icon">🤖</div>
+            <div class="ai-text">${randomMessage}</div>
         </div>
     `;
 
@@ -248,36 +272,31 @@ function openGame(game) {
 
     currentGame = game;
 
-    // Show game container
-    gameContainer.classList.add('active');
+    // Usar el nuevo sistema GameContainer para juegos
+    const gameIds = ['snake', 'minesweeper', 'combat', 'pong'];
 
-    // Load game content
-    loadGameContent(game);
+    if (gameIds.includes(game.id)) {
+        // Usar GameLoader para cargar el juego en el nuevo contenedor
+        const gameLoader = new GameLoader();
+        gameLoader.loadGame(game);
+    } else {
+        // Para settings, messages, etc. usar el sistema antiguo
+        gameContainer.classList.add('active');
+        loadGameContent(game);
 
-    // On mobile, hide home screen using visibility
-    if (!isDesktop) {
-        homeScreen.style.visibility = 'hidden';
-        homeScreen.style.opacity = '0';
+        // On mobile, hide home screen using visibility
+        if (!isDesktop) {
+            homeScreen.style.visibility = 'hidden';
+            homeScreen.style.opacity = '0';
+        }
     }
 }
 
-// Load game content
+// Load game content (legacy - solo para settings, messages, etc.)
 function loadGameContent(game) {
     gameContent.innerHTML = '';
 
     switch (game.id) {
-        case 'snake':
-            loadSnakeGame();
-            break;
-        case 'minesweeper':
-            loadMinesweeperGame();
-            break;
-        case 'pong':
-            loadPongGame();
-            break;
-        case 'combat':
-            loadCombatGame();
-            break;
         case 'settings':
             loadSettingsApp();
             break;
