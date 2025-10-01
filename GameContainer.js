@@ -52,15 +52,6 @@ class GameContainer {
         // Añadir al DOM
         document.body.appendChild(this.container);
 
-        // En móvil, mantener el home-screen visible detrás
-        if (!this.isDesktop) {
-            const homeScreen = document.getElementById('home-screen');
-            if (homeScreen) {
-                homeScreen.style.visibility = 'visible';
-                homeScreen.style.opacity = '1';
-            }
-        }
-
         // Mostrar loading animation
         this.showLoadingAnimation(gameConfig);
 
@@ -211,13 +202,11 @@ class GameContainer {
                 this.container.remove();
             }
 
-            // Mostrar pantalla principal (solo necesario en desktop, en móvil ya está visible)
-            if (this.isDesktop) {
-                const homeScreen = document.getElementById('home-screen');
-                if (homeScreen) {
-                    homeScreen.style.visibility = 'visible';
-                    homeScreen.style.opacity = '1';
-                }
+            // Mostrar pantalla principal en todos los dispositivos
+            const homeScreen = document.getElementById('home-screen');
+            if (homeScreen) {
+                homeScreen.style.visibility = 'visible';
+                homeScreen.style.opacity = '1';
             }
 
             this.currentGame = null;

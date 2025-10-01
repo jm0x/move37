@@ -16,14 +16,6 @@ class GameLoader {
         this.gameContainer = new GameContainer();
         const gameArea = this.gameContainer.create(gameConfig);
 
-        // Ocultar home screen en móvil
-        const isDesktop = window.innerWidth >= 768;
-        const homeScreen = document.getElementById('home-screen');
-        if (!isDesktop && homeScreen) {
-            homeScreen.style.visibility = 'hidden';
-            homeScreen.style.opacity = '0';
-        }
-
         // Esperar a que el loading termine
         window.addEventListener('gameContainerReady', (event) => {
             if (event.detail.gameId === gameConfig.id) {
