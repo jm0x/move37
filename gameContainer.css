@@ -40,15 +40,16 @@
     }
 }
 
-/* Móvil - centrar contenedor verticalmente */
+/* Móvil - posicionar contenedor ligeramente hacia arriba */
 @media (max-width: 767px) {
     .game-container-custom {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         flex-direction: column;
         background: transparent;
         pointer-events: none; /* Permitir que los clicks pasen a través del fondo transparente */
+        padding-top: 10vh; /* Separación desde arriba */
     }
 
     /* Pero permitir clicks en el contenido del juego */
