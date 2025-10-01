@@ -45,7 +45,9 @@
     .game-container-custom {
         display: flex;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        background: transparent;
     }
 }
 
@@ -177,19 +179,22 @@
     .game-area {
         width: 100vw;
         height: 100vw;
-        max-height: calc(100vh - 56px);
+        flex-shrink: 0;
     }
 }
 
-/* Móvil - spacer para completar desde el área de juego hasta el bottom */
-.game-spacer {
-    position: relative;
-    width: 100%;
-    flex: 1;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    pointer-events: none;
+/* Contenedor interno para agrupar navbar + game-area en móvil */
+.game-inner-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+}
+
+@media (min-width: 768px) {
+    .game-inner-wrapper {
+        width: 450px;
+    }
 }
 
 /* Animación de loading */

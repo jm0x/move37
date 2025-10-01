@@ -9,7 +9,6 @@ class GameContainer {
         this.container = null;
         this.navbar = null;
         this.gameArea = null;
-        this.spacer = null;
         this.score = 0;
         this.bestScore = 0;
         this.isDesktop = window.innerWidth >= 768;
@@ -33,6 +32,10 @@ class GameContainer {
         this.container.id = 'game-container-custom';
         this.container.className = 'game-container-custom';
 
+        // Crear contenedor interno para navbar + game-area
+        const innerWrapper = document.createElement('div');
+        innerWrapper.className = 'game-inner-wrapper';
+
         // Crear navbar
         this.navbar = this.createNavbar(gameConfig);
 
@@ -42,18 +45,9 @@ class GameContainer {
         this.gameArea.className = 'game-area';
 
         // Ensamblar estructura
-        this.container.appendChild(this.navbar);
-        this.container.appendChild(this.gameArea);
-
-        // Crear spacer para móvil (completa el cuadrado hasta la navbar)
-        if (!this.isDesktop) {
-            this.spacer = document.createElement('div');
-            this.spacer.className = 'game-spacer';
-            this.container.appendChild(this.spacer);
-
-            // Calcular posición del spacer en móvil
-            this.calculateSpacerPosition();
-        }
+        innerWrapper.appendChild(this.navbar);
+        innerWrapper.appendChild(this.gameArea);
+        this.container.appendChild(innerWrapper);
 
         // Añadir al DOM
         document.body.appendChild(this.container);
@@ -225,13 +219,6 @@ class GameContainer {
     applyStyles() {
         // Los estilos están en un archivo CSS separado (gameContainer.css)
         // Todos los juegos tendrán el mismo tamaño fijo definido en CSS
-    }
-
-    /**
-     * Calcula la posición del spacer en móvil para completar el cuadrado
-     */
-    calculateSpacerPosition() {
-        // El spacer ahora usa flex: 1 en CSS para llenar automáticamente el espacio restante
     }
 
     /**
