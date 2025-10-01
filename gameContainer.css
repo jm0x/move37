@@ -48,6 +48,12 @@
         justify-content: center;
         flex-direction: column;
         background: transparent;
+        pointer-events: none; /* Permitir que los clicks pasen a través del fondo transparente */
+    }
+
+    /* Pero permitir clicks en el contenido del juego */
+    .game-container-custom .game-inner-wrapper {
+        pointer-events: auto;
     }
 }
 
