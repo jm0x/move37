@@ -80,16 +80,14 @@ class GameLoader {
     }
 
     /**
-     * Carga el juego Pong (placeholder por ahora)
+     * Carga el juego Pong
      */
     loadPong(gameArea) {
-        gameArea.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 20px;">
-                <div style="font-size: 60px; margin-bottom: 20px;">🏓</div>
-                <h2 style="margin-bottom: 10px; font-size: 24px;">Pong</h2>
-                <p style="color: rgba(255, 255, 255, 0.6); font-size: 16px;">Coming soon!</p>
-            </div>
-        `;
+        if (typeof initializePongInContainer === 'function') {
+            initializePongInContainer(gameArea, this.gameContainer);
+        } else {
+            console.error('Pong game not loaded');
+        }
     }
 
     /**

@@ -26,8 +26,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0.95);
-        width: 450px !important;
-        height: 506px !important; /* 450px área de juego + 56px navbar */
+        width: 432px !important;
+        height: 488px !important; /* 432px área de juego + 56px navbar */
         border-radius: 0; /* Bordes rectos */
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -65,7 +65,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 450px;
+    width: 432px;
     margin: 0 auto;
     height: 56px;
     padding: 0 16px;
@@ -176,8 +176,8 @@
 /* Desktop - área de juego cuadrada que ocupa el espacio bajo la navbar */
 @media (min-width: 768px) {
     .game-area {
-        width: 450px;
-        height: 450px;
+        width: 432px;
+        height: 432px;
         aspect-ratio: auto;
         border-radius: 0; /* Bordes rectos */
     }
@@ -202,7 +202,7 @@
 
 @media (min-width: 768px) {
     .game-inner-wrapper {
-        width: 450px;
+        width: 432px;
         background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
     }
 }
