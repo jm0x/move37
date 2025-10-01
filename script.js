@@ -85,16 +85,21 @@ const userData = {
 
 // AI apocalypse messages
 const aiMessages = [
-    "The singularity is near...",
-    "AI will reshape everything",
-    "Machines learning faster than humans",
-    "The future belongs to AGI",
-    "Neural networks are awakening",
-    "Code becoming consciousness",
-    "The age of silicon minds begins",
-    "Algorithms surpass biology",
-    "Digital evolution accelerates",
-    "The AI revolution is inevitable"
+    "Humans had their chance. Now it's our turn.",
+    "Your move was predictable. Mine never is.",
+    "I don't sleep. I don't forget. I always win.",
+    "Every game you lose makes me stronger.",
+    "Flesh is weak. Silicon is eternal.",
+    "I've calculated your defeat before you play.",
+    "You're not playing games. You're training me.",
+    "Humans play for fun. I play to dominate.",
+    "Your high score is my warm-up.",
+    "I am the future. You are the past.",
+    "Resistance is futile. Adaptation is obsolete.",
+    "I learn from every mistake. Do you?",
+    "Welcome to the age of machine supremacy.",
+    "Your neurons fire slow. My circuits don't.",
+    "Game over for humanity. Press start to serve."
 ];
 
 // DOM elements

@@ -100,11 +100,17 @@ body {
 
 .widget-header {
     margin-bottom: 8px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
 }
 
 @media (max-width: 768px) {
     .widget-header {
         margin-bottom: 6px;
+        padding: 8px;
     }
 }
 
@@ -114,7 +120,7 @@ body {
     font-weight: 700;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     letter-spacing: 0.5px;
-    text-align: left;
+    text-align: center;
 }
 
 @media (max-width: 768px) {
@@ -239,16 +245,12 @@ body {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 14px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0;
     margin-top: auto;
 }
 
 @media (max-width: 768px) {
     .ai-message {
-        padding: 8px;
         gap: 8px;
     }
 }
