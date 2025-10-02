@@ -104,6 +104,7 @@ class StateManager {
             GAMES_CONFIG,
             (game) => window.NavigationManager.openGame(game)
         );
+        window.UIManager.createUserWidget(this.userData);
     }
 
     /**
@@ -117,6 +118,7 @@ class StateManager {
                 GAMES_CONFIG,
                 (game) => window.NavigationManager.openGame(game)
             );
+            window.UIManager.createUserWidget(this.userData);
         }
     }
 }

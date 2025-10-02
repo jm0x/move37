@@ -63,6 +63,12 @@ class NavigationManager {
             case 'messages':
                 this.loadMessages();
                 break;
+            case 'browser':
+                this.loadBrowser();
+                break;
+            case 'wallet':
+                this.loadWallet();
+                break;
             default:
                 this.loadPlaceholder(game);
         }
@@ -84,6 +90,20 @@ class NavigationManager {
      */
     loadMessages() {
         this.gameContent.innerHTML = window.UIManager.createMessagesContent();
+    }
+
+    /**
+     * Carga la app de Browser
+     */
+    loadBrowser() {
+        this.gameContent.innerHTML = window.UIManager.createBrowserContent();
+    }
+
+    /**
+     * Carga la app de Wallet
+     */
+    loadWallet() {
+        this.gameContent.innerHTML = window.UIManager.createWalletContent();
     }
 
     /**

@@ -49,7 +49,7 @@ class App {
             (game) => window.NavigationManager.openGame(game)
         );
 
-        // Crear widget de usuario
+        // Crear widget de usuario (con AI integrado)
         const userData = window.StateManager.getUserData();
         window.UIManager.createUserWidget(userData);
     }

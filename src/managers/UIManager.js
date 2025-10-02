@@ -24,6 +24,9 @@ class UIManager {
     createAppIcons(games, onAppClick) {
         if (!this.appsGrid) return;
 
+        // Limpiar intervalo de AI widget si existe
+        this.cleanupAIWidget();
+
         this.appsGrid.innerHTML = '';
 
         const isMobile = Helpers.isMobile();
@@ -32,7 +35,9 @@ class UIManager {
 
         const totalRows = isMobile ? 6 : 4;
         const totalCols = isMobile ? 3 : 4;
-        const widget2x1Spaces = 2;
+        // En desktop: widget unificado (1 espacio)
+        // En mobile: widget unificado (1 espacio)
+        const widgetSpaces = 1;
 
         // Añadir apps regulares
         regularApps.forEach((game) => {
@@ -42,7 +47,7 @@ class UIManager {
 
         // Calcular espacios vacíos
         const regularAppsCount = regularApps.length;
-        const availableSpacesBeforeDock = (totalCols * (totalRows - 1)) - widget2x1Spaces;
+        const availableSpacesBeforeDock = (totalCols * (totalRows - 1)) - widgetSpaces;
         const emptySpaces = availableSpacesBeforeDock - regularAppsCount;
 
         // Añadir espacios vacíos
@@ -76,49 +81,82 @@ class UIManager {
     }
 
     /**
-     * Crea el widget de usuario
+     * Crea el widget de usuario con AI integrado
      */
     createUserWidget(userData) {
         if (!this.appsGrid) return;
 
+        // Limpiar intervalo de AI widget si existe
+        this.cleanupAIWidget();
+
         const existingWidget = document.querySelector('.user-widget');
         if (existingWidget) existingWidget.remove();
-
-        const randomMessage = Helpers.randomElement(AI_MESSAGES);
 
         const widget = document.createElement('div');
         widget.className = 'user-widget';
         widget.innerHTML = `
-            <div class="widget-header">
-                <div class="app-name">Move37</div>
-            </div>
-            <div class="widget-body">
+            <div class="widget-left">
                 <div class="user-name">${userData.name}</div>
-                <div class="widget-stats">
-                    <div class="stat-item">
-                        <div class="stat-icon">🔥</div>
-                        <div class="stat-info">
-                            <div class="stat-value">${userData.consecutiveDays}</div>
-                            <div class="stat-label">GM</div>
-                        </div>
+                <div class="widget-stats-vertical">
+                    <div class="stat-row">
+                        <span class="stat-icon">🔥</span>
+                        <span class="stat-value">${userData.consecutiveDays}</span>
+                        <span class="stat-label">GM</span>
                     </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-info">
-                            <div class="stat-value">${userData.totalPoints}</div>
-                            <div class="stat-label">Total</div>
-                        </div>
+                    <div class="stat-row">
+                        <span class="stat-icon">⭐</span>
+                        <span class="stat-value">${userData.totalPoints}</span>
+                        <span class="stat-label">Total</span>
                     </div>
                 </div>
             </div>
-            <div class="ai-message">
-                <div class="ai-icon">🤖</div>
-                <div class="ai-text">${randomMessage}</div>
+            <div class="widget-right">
+                <div class="ai-message">
+                    <div class="ai-icon">🤖</div>
+                    <div class="ai-text" id="ai-message-text"></div>
+                </div>
             </div>
         `;
 
         this.appsGrid.appendChild(widget);
+
+        // Mostrar primer mensaje de AI
+        this.updateAIMessage();
+
+        // Rotar mensaje cada 30 segundos
+        this.aiMessageInterval = setInterval(() => {
+            this.updateAIMessage();
+        }, 30000);
+    }
+
+
+    /**
+     * Actualiza el mensaje del AI widget
+     */
+    updateAIMessage() {
+        const aiTextElement = document.getElementById('ai-message-text');
+        if (aiTextElement) {
+            const randomMessage = Helpers.randomElement(AI_MESSAGES);
+
+            // Fade out
+            aiTextElement.style.opacity = '0';
+
+            setTimeout(() => {
+                aiTextElement.textContent = randomMessage;
+                // Fade in
+                aiTextElement.style.opacity = '1';
+            }, 300);
+        }
+    }
+
+    /**
+     * Limpia el intervalo de mensajes AI
+     */
+    cleanupAIWidget() {
+        if (this.aiMessageInterval) {
+            clearInterval(this.aiMessageInterval);
+            this.aiMessageInterval = null;
+        }
     }
 
     /**
@@ -246,8 +284,38 @@ class UIManager {
         return `
             <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
                 <div style="text-align: center;">
-                    <div style="font-size: 60px; margin-bottom: 20px;">💬</div>
+                    <div style="font-size: 60px; margin-bottom: 20px;">✉️</div>
                     <h2 style="margin-bottom: 10px;">Messages</h2>
+                    <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Crea el contenido de la app de Browser
+     */
+    createBrowserContent() {
+        return `
+            <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">🦊</div>
+                    <h2 style="margin-bottom: 10px;">Browser</h2>
+                    <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Crea el contenido de la app de Wallet
+     */
+    createWalletContent() {
+        return `
+            <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">💰</div>
+                    <h2 style="margin-bottom: 10px;">Wallet</h2>
                     <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
                 </div>
             </div>
