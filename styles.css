@@ -92,8 +92,8 @@ body {
 
 @media (max-width: 768px) {
     .user-widget {
-        /* Grid positioning - mobile (4x6) */
-        grid-column: 4 / 5;
+        /* Grid positioning - mobile (3x6) */
+        grid-column: 3 / 4;
         grid-row: 1 / 2;
         padding: 12px;
         gap: 10px;
@@ -337,10 +337,10 @@ body {
 
 @media (max-width: 768px) {
     .apps-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(6, 1fr);
-        gap: 10px;
-        padding: 40px 15px 120px;
+        gap: 12px;
+        padding: 40px 20px 120px;
     }
 }
 
