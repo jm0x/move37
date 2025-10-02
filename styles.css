@@ -435,6 +435,15 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.4);
     align-self: center;
     justify-self: center;
+    /* Forzar fila del dock en desktop (fila 4) */
+    grid-row: 4 / 5;
+}
+
+@media (max-width: 768px) {
+    /* Forzar fila del dock en móvil (fila 6) */
+    .app-icon.dock-app {
+        grid-row: 6 / 7;
+    }
 }
 
 .app-icon:hover {
