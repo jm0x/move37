@@ -5,21 +5,21 @@
 const GAMES_CONFIG = [
     {
         id: 'snake',
-        name: 'Snake',
+        name: 'Serpent',
         icon: '🐍',
         color: '#4CAF50',
         isDock: false
     },
     {
         id: 'minesweeper',
-        name: 'Miner',
+        name: 'Bomb Hunt',
         icon: '⛏️',
         color: '#2196F3',
         isDock: false
     },
     {
         id: 'pong',
-        name: 'Pong',
+        name: 'Paddle',
         icon: '🏓',
         color: '#FF9800',
         isDock: false
@@ -41,7 +41,7 @@ const GAMES_CONFIG = [
     {
         id: 'appstore',
         name: 'App Store',
-        icon: '🏪',
+        icon: '💎',
         color: '#007AFF',
         isDock: true
     },
