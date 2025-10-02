@@ -40,8 +40,8 @@ const GAMES_CONFIG = [
     },
     {
         id: 'wallet',
-        name: 'Wallet',
-        icon: '💰',
+        name: 'Upgrade',
+        icon: '⭐',
         color: '#FFD700',
         isDock: true
     },
