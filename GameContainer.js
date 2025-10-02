@@ -11,7 +11,7 @@ class GameContainer {
         this.gameArea = null;
         this.score = 0;
         this.bestScore = 0;
-        this.isDesktop = window.innerWidth >= 768;
+        this.isDesktop = !Helpers.isMobile();
     }
 
     /**
@@ -176,15 +176,16 @@ class GameContainer {
      * Carga el mejor score desde localStorage
      */
     loadBestScore(gameId) {
-        const saved = localStorage.getItem(`bestScore_${gameId}`);
-        this.bestScore = saved ? parseInt(saved) : 0;
+        this.bestScore = window.StorageManager ? window.StorageManager.getBestScore(gameId) : 0;
     }
 
     /**
      * Guarda el mejor score en localStorage
      */
     saveBestScore(gameId, score) {
-        localStorage.setItem(`bestScore_${gameId}`, score);
+        if (window.StorageManager) {
+            window.StorageManager.saveBestScore(gameId, score);
+        }
     }
 
     /**
