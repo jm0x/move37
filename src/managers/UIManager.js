@@ -34,7 +34,7 @@ class UIManager {
         const dockApps = games.filter(game => game.isDock);
 
         const totalRows = isMobile ? 6 : 4;
-        const totalCols = isMobile ? 3 : 4;
+        const totalCols = 4; // Siempre 4 columnas (desktop y mobile)
         // En desktop: widget unificado (1 espacio)
         // En mobile: widget unificado (1 espacio)
         const widgetSpaces = 1;
