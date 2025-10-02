@@ -92,9 +92,9 @@ body {
 
 @media (max-width: 768px) {
     .user-widget {
-        /* Grid positioning - mobile (4x6): 1 fila x 2 columnas */
+        /* Grid positioning - mobile (4x6): 2 filas x 2 columnas, desde la segunda fila */
         grid-column: 1 / 3;
-        grid-row: 2 / 3;
+        grid-row: 2 / 4;
         padding: 8px 10px;
         gap: 6px;
         transform: none;
@@ -103,6 +103,8 @@ body {
         height: 100%;
         justify-content: center;
         align-items: center;
+        /* Asegurar que se coloca antes que los iconos para no solaparlos */
+        order: -1;
     }
 }
 
@@ -114,7 +116,7 @@ body {
 
 @media (max-width: 768px) {
     .widget-left {
-        gap: 8px;
+        gap: 10px;
         flex-direction: row;
         align-items: center;
         flex: 1;
@@ -132,7 +134,7 @@ body {
         flex-direction: row;
         align-items: center;
         justify-content: flex-end;
-        gap: 6px;
+        gap: 10px;
         flex: 1;
     }
 }
@@ -161,7 +163,7 @@ body {
 
 @media (max-width: 768px) {
     .app-name {
-        font-size: 14px;
+        font-size: 16px;
     }
 }
 
@@ -175,7 +177,7 @@ body {
 
 @media (max-width: 768px) {
     .widget-body {
-        gap: 6px;
+        gap: 10px;
     }
 }
 
@@ -192,7 +194,7 @@ body {
 
 @media (max-width: 768px) {
     .user-name {
-        font-size: 14px;
+        font-size: 18px;
         text-align: left;
     }
 }
@@ -206,7 +208,7 @@ body {
 
 @media (max-width: 768px) {
     .widget-stats-vertical {
-        gap: 8px;
+        gap: 12px;
         flex-direction: row;
         width: auto;
     }
@@ -226,7 +228,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-row {
-        gap: 3px;
+        gap: 6px;
         padding: 0;
         width: auto;
         justify-content: flex-start;
@@ -242,7 +244,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-item {
-        gap: 8px;
+        gap: 10px;
     }
 }
 
@@ -254,7 +256,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-icon {
-        font-size: 14px;
+        font-size: 28px; /* Emojis más grandes en móvil */
     }
 }
 
@@ -274,7 +276,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-value {
-        font-size: 12px;
+        font-size: 18px;
         margin-right: 0;
     }
 }
@@ -289,7 +291,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-label {
-        font-size: 9px;
+        font-size: 12px;
     }
 }
 
@@ -301,7 +303,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-divider {
-        height: 24px;
+        height: 28px;
     }
 }
 
@@ -316,7 +318,7 @@ body {
 
 @media (max-width: 768px) {
     .ai-message {
-        gap: 4px;
+        gap: 10px;
         flex-direction: row;
         align-items: center;
         justify-content: flex-end;
@@ -332,7 +334,7 @@ body {
 
 @media (max-width: 768px) {
     .ai-icon {
-        font-size: 14px;
+        font-size: 28px; /* Emoji del asistente más grande */
     }
 }
 
@@ -349,14 +351,15 @@ body {
 
 @media (max-width: 768px) {
     .ai-text {
-        font-size: 8px;
-        line-height: 1.2;
-        text-align: right;
-        flex: 0 1 auto;
-        max-width: 120px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        font-size: 14px;
+        line-height: 1.4;
+        text-align: left;
+        font-weight: 600;
+        flex: 1 1 auto;
+        max-width: none;
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
     }
 }
 
