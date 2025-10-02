@@ -328,7 +328,7 @@ body {
 
 @media (max-width: 768px) {
     .ai-message {
-        gap: 10px;
+        gap: 12px;
         flex-direction: row;
         align-items: center;
         justify-content: flex-start; /* alinear a la izquierda para alinear con GM/estrella */
@@ -353,6 +353,8 @@ body {
         width: 32px;
         min-width: 32px;
         text-align: center;
+        height: 32px;
+        line-height: 32px; /* asegurar centro vertical del emoji */
     }
 }
 
@@ -387,7 +389,7 @@ body {
     .ai-text::before {
         content: '';
         position: absolute;
-        left: -8px;
+        left: -4px; /* separa ligeramente el triángulo del emoji */
         top: 50%;
         transform: translateY(-50%);
         width: 0; height: 0;
@@ -400,7 +402,7 @@ body {
     .ai-text::after {
         content: '';
         position: absolute;
-        left: -7px;
+        left: -3px; /* relleno acompaña la separación */
         top: 50%;
         transform: translateY(-50%);
         width: 0; height: 0;
