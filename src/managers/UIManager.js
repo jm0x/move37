@@ -145,14 +145,6 @@ class UIManager {
 
             setTimeout(() => {
                 aiTextElement.textContent = randomMessage;
-                // En móvil forzamos tamaño y no wrapping extremo
-                if (Helpers.isMobile()) {
-                    aiTextElement.style.fontSize = '11px';
-                    aiTextElement.style.lineHeight = '1.25';
-                    aiTextElement.style.whiteSpace = 'nowrap';
-                    aiTextElement.style.textOverflow = 'ellipsis';
-                    aiTextElement.style.overflow = 'hidden';
-                }
                 // Fade in
                 aiTextElement.style.opacity = '1';
             }, 300);

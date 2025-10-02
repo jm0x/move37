@@ -117,27 +117,12 @@ body {
 
 .widget-left { display: contents; }
 
-@media (max-width: 768px) {
-    .widget-left { display: contents; }
-}
-
 .widget-right { display: contents; }
-
-@media (max-width: 768px) {
-    .widget-right { display: contents; }
-}
 
 .widget-header {
     margin: 0;
     padding: 0;
     text-align: center;
-}
-
-@media (max-width: 768px) {
-    .widget-header {
-        margin: 0;
-        padding: 0;
-    }
 }
 
 .app-name {
@@ -200,10 +185,6 @@ body {
 }
 
 .widget-stats-vertical { display: contents; }
-
-@media (max-width: 768px) {
-    .widget-stats-vertical { display: contents; }
-}
 
 .stat-row {
     display: flex;
@@ -441,11 +422,7 @@ body {
     display: none;
 }
 
-@media (max-width: 768px) {
-    .apps-grid::after {
-        height: 0;
-    }
-}
+
 
 /* Iconos de aplicaciones */
 .app-icon {
