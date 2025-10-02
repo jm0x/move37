@@ -36,8 +36,8 @@ class UIManager {
         const totalRows = isMobile ? 6 : 4;
         const totalCols = 4; // Siempre 4 columnas
         // En desktop: widget unificado (1 espacio)
-        // En mobile: widget unificado (2 espacios - 2 filas)
-        const widgetSpaces = isMobile ? 2 : 1;
+        // En mobile: widget unificado (4 espacios - 1 fila completa)
+        const widgetSpaces = isMobile ? 4 : 1;
 
         // Añadir apps regulares
         regularApps.forEach((game) => {
