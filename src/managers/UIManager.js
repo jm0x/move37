@@ -34,10 +34,10 @@ class UIManager {
         const dockApps = games.filter(game => game.isDock);
 
         const totalRows = isMobile ? 6 : 4;
-        const totalCols = isMobile ? 3 : 4;
+        const totalCols = 4; // Siempre 4 columnas
         // En desktop: widget unificado (1 espacio)
-        // En mobile: widget unificado (1 espacio)
-        const widgetSpaces = 1;
+        // En mobile: widget unificado (2 espacios - 2 filas)
+        const widgetSpaces = isMobile ? 2 : 1;
 
         // Añadir apps regulares
         regularApps.forEach((game) => {
@@ -286,6 +286,21 @@ class UIManager {
                 <div style="text-align: center;">
                     <div style="font-size: 60px; margin-bottom: 20px;">✉️</div>
                     <h2 style="margin-bottom: 10px;">Messages</h2>
+                    <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Crea el contenido de la app de Browser
+     */
+    createBrowserContent() {
+        return `
+            <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">🦊</div>
+                    <h2 style="margin-bottom: 10px;">Browser</h2>
                     <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
                 </div>
             </div>

@@ -25,6 +25,13 @@ const GAMES_CONFIG = [
         isDock: false
     },
     {
+        id: 'browser',
+        name: 'Browser',
+        icon: '🦊',
+        color: '#FF6B35',
+        isDock: true
+    },
+    {
         id: 'messages',
         name: 'Messages',
         icon: '✉️',
