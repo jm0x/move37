@@ -186,19 +186,19 @@ body {
 
 @media (max-width: 768px) {
     .user-name {
-        font-size: 22px;
+        font-size: 24px;
         text-align: center;
         grid-row: 1;
-        justify-self: center;
+        justify-self: stretch;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 8px 12px;
+        padding: 10px 14px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 12px;
-        width: auto;
-        max-width: 90%;
+        width: 100%;
+        box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -262,10 +262,11 @@ body {
 
 @media (max-width: 768px) {
     .stat-icon {
-        font-size: 24px; /* emojis unificados y un poco más grandes */
-        width: 28px;
-        min-width: 28px;
+        font-size: 28px; /* emojis más grandes y unificados */
+        width: 32px;
+        min-width: 32px;
         text-align: center;
+        margin-right: 6px; /* más separación hacia la derecha */
     }
 }
 
@@ -285,7 +286,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-value {
-        font-size: 18px; /* un poco más grande */
+        font-size: 20px; /* valores más grandes */
         margin-right: 0;
     }
 }
@@ -348,9 +349,9 @@ body {
 
 @media (max-width: 768px) {
     .ai-icon {
-        font-size: 24px; /* igual que los otros emojis */
-        width: 28px;
-        min-width: 28px;
+        font-size: 28px; /* igual que los otros emojis */
+        width: 32px;
+        min-width: 32px;
         text-align: center;
     }
 }
@@ -367,22 +368,7 @@ body {
 }
 
 @media (max-width: 768px) {
-    .ai-text {
-        font-size: 12px;
-        line-height: 1.3;
-        text-align: left;
-        font-weight: 600;
-        flex: 1 1 auto;
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-        word-break: break-word;
-        hyphens: auto;
-        display: -webkit-box;
-        -webkit-line-clamp: 2; /* clamp a 2 líneas */
-        -webkit-box-orient: vertical;
-    }
+    .ai-text { display: none; }
 }
 
 
