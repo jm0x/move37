@@ -116,7 +116,7 @@ class AppStoreApp extends BaseApp {
                 color: #fff;
                 width: 550px;
                 height: 100%;
-                border-radius: 15px;
+                border-radius: 0;
                 overflow: hidden;
             ">
                 <!-- Header fijo -->
