@@ -99,12 +99,13 @@ body {
         transform: none;
         width: 100%;
         height: 100%;
-        /* Estructura interna en 3 filas: nombre, stats, robot */
+        /* Estructura interna en 4 filas: nombre, GM, Estrella, Robot */
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto; /* evitar crecimiento excesivo */
-        row-gap: 8px;
+        grid-template-rows: auto auto auto auto; /* evitar crecimiento excesivo */
+        row-gap: 6px;
         align-items: start;
+        justify-items: center; /* centrar contenido en cada fila */
         /* Asegurar que se coloca antes que los iconos para no solaparlos */
         order: -1;
     }
@@ -185,10 +186,10 @@ body {
 
 @media (max-width: 768px) {
     .user-name {
-        font-size: 16px;
-        text-align: left;
+        font-size: 20px;
+        text-align: center;
         grid-row: 1;
-        justify-self: start;
+        justify-self: center;
         width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -204,15 +205,7 @@ body {
 }
 
 @media (max-width: 768px) {
-    .widget-stats-vertical {
-        gap: 8px;
-        flex-direction: row;
-        width: auto;
-        grid-row: 2;
-        justify-content: space-between;
-        width: 100%;
-        flex-wrap: nowrap;
-    }
+    .widget-stats-vertical { display: contents; }
 }
 
 .stat-row {
@@ -229,11 +222,15 @@ body {
 
 @media (max-width: 768px) {
     .stat-row {
-        gap: 4px;
+        gap: 6px;
         padding: 0;
-        width: auto;
-        justify-content: flex-start;
+        width: 100%;
+        justify-content: center; /* centrar cada fila de stats */
     }
+    /* GM en fila 2 */
+    .widget-stats-vertical .stat-row:nth-child(1) { grid-row: 2; }
+    /* Estrella en fila 3 */
+    .widget-stats-vertical .stat-row:nth-child(2) { grid-row: 3; }
 }
 
 .stat-item {
@@ -245,7 +242,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-item {
-        gap: 8px;
+        gap: 10px;
     }
 }
 
@@ -257,7 +254,7 @@ body {
 
 @media (max-width: 768px) {
     .stat-icon {
-        font-size: 22px;
+        font-size: 24px; /* emojis unificados y un poco más grandes */
     }
 }
 
@@ -319,15 +316,16 @@ body {
 
 @media (max-width: 768px) {
     .ai-message {
-        gap: 8px;
+        gap: 10px;
         flex-direction: row;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: center; /* centrar robot y texto */
         width: 100%;
-        grid-row: 3;
+        grid-row: 4;
         min-width: 0;
         max-width: 100%;
         overflow: hidden;
+        text-align: center;
     }
 }
 
@@ -339,7 +337,7 @@ body {
 
 @media (max-width: 768px) {
     .ai-icon {
-        font-size: 22px;
+        font-size: 24px; /* igual que los otros emojis */
     }
 }
 
