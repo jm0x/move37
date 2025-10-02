@@ -39,10 +39,10 @@ const GAMES_CONFIG = [
         isDock: true
     },
     {
-        id: 'wallet',
-        name: 'Upgrade',
-        icon: '⭐',
-        color: '#FFD700',
+        id: 'appstore',
+        name: 'App Store',
+        icon: '🏪',
+        color: '#007AFF',
         isDock: true
     },
     {

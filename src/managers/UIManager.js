@@ -1,5 +1,6 @@
 /**
  * UIManager - Maneja la interfaz de usuario
+ * Responsable de la gestión de iconos de apps, widgets y wallpapers
  */
 
 class UIManager {
@@ -250,78 +251,6 @@ class UIManager {
             deviceContainer.style.borderRadius = '20px';
             deviceContainer.style.border = '8px solid #1d1d1f';
         }
-    }
-
-    /**
-     * Crea el contenido de la app de Settings
-     */
-    createSettingsContent(currentWallpaper, onWallpaperSelect) {
-        return `
-            <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%;">
-                <h2 style="text-align: center; margin-bottom: 30px; color: #fff;">⚙️ Settings</h2>
-
-                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);">
-                    <h3 style="margin-bottom: 15px; color: #fff; font-size: 18px;">Wallpaper</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                        ${WALLPAPERS_CONFIG.map(wallpaper => `
-                            <div style="display: flex; align-items: center; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 2px solid ${currentWallpaper === wallpaper.id ? '#4CAF50' : 'rgba(255, 255, 255, 0.1)'}; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;"
-                                 onclick="window.StateManager.selectWallpaper('${wallpaper.id}')"
-                                 onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'"
-                                 onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'">
-                                <div style="width: 40px; height: 30px; border-radius: 5px; margin-right: 15px; ${wallpaper.image ? `background-image: url('${wallpaper.image}'); background-size: cover; background-position: center;` : `background: ${wallpaper.gradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};`}"></div>
-                                <span style="font-weight: 500; color: #fff; flex: 1;">${wallpaper.name}</span>
-                                ${currentWallpaper === wallpaper.id ? '<span style="color: #4CAF50; font-size: 18px;">✓</span>' : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * Crea el contenido de la app de Messages
-     */
-    createMessagesContent() {
-        return `
-            <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
-                <div style="text-align: center;">
-                    <div style="font-size: 60px; margin-bottom: 20px;">✉️</div>
-                    <h2 style="margin-bottom: 10px;">Messages</h2>
-                    <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * Crea el contenido de la app de Browser
-     */
-    createBrowserContent() {
-        return `
-            <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
-                <div style="text-align: center;">
-                    <div style="font-size: 60px; margin-bottom: 20px;">🦊</div>
-                    <h2 style="margin-bottom: 10px;">Browser</h2>
-                    <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * Crea el contenido de la app de Upgrade
-     */
-    createWalletContent() {
-        return `
-            <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
-                <div style="text-align: center;">
-                    <div style="font-size: 60px; margin-bottom: 20px;">⭐</div>
-                    <h2 style="margin-bottom: 10px;">Upgrade</h2>
-                    <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
-                </div>
-            </div>
-        `;
     }
 }
 

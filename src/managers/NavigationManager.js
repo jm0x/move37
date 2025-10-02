@@ -1,5 +1,6 @@
 /**
- * NavigationManager - Maneja la navegación entre pantallas y juegos
+ * NavigationManager - Maneja la navegación entre pantallas, juegos y apps
+ * Utiliza GameLoader y AppLoader para cargar contenido dinámicamente
  */
 
 class NavigationManager {
@@ -8,6 +9,8 @@ class NavigationManager {
         this.gameContent = null;
         this.closeGameBtn = null;
         this.currentGame = null;
+        this.gameLoader = null;
+        this.appLoader = null;
     }
 
     /**
@@ -18,13 +21,17 @@ class NavigationManager {
         this.gameContent = document.getElementById('game-content');
         this.closeGameBtn = document.getElementById('close-game');
 
+        // Inicializar loaders
+        this.gameLoader = new GameLoader();
+        this.appLoader = new AppLoader();
+
         if (this.closeGameBtn) {
             this.closeGameBtn.addEventListener('click', () => this.closeGame());
         }
     }
 
     /**
-     * Abre un juego
+     * Abre un juego o app según su tipo
      */
     openGame(game) {
         if (game.id.startsWith('coming-soon')) {
@@ -35,98 +42,74 @@ class NavigationManager {
         this.currentGame = game;
 
         const gameIds = ['snake', 'minesweeper', 'combat', 'pong'];
+        const appIds = ['settings', 'messages', 'browser', 'appstore', 'wallet'];
 
         if (gameIds.includes(game.id)) {
-            // Usar GameLoader para juegos reales
-            const gameLoader = new GameLoader();
-            gameLoader.loadGame(game);
+            // Cargar juego usando GameLoader
+            this.gameLoader.loadGame(game);
+        } else if (appIds.includes(game.id)) {
+            // Cargar app usando AppLoader
+            this.loadApp(game);
         } else {
-            // Para settings, messages, etc.
-            this.loadLegacyContent(game);
-            window.UIManager.hideHomeScreen();
+            // Placeholder para contenido no implementado
+            this.loadPlaceholder(game);
         }
     }
 
     /**
-     * Carga contenido legacy (settings, messages)
+     * Carga una app usando AppLoader
      */
-    loadLegacyContent(game) {
+    loadApp(appConfig) {
         if (!this.gameContainer || !this.gameContent) return;
 
         this.gameContainer.classList.add('active');
         this.gameContent.innerHTML = '';
 
-        switch (game.id) {
-            case 'settings':
-                this.loadSettings();
-                break;
-            case 'messages':
-                this.loadMessages();
-                break;
-            case 'browser':
-                this.loadBrowser();
-                break;
-            case 'wallet':
-                this.loadWallet();
-                break;
-            default:
-                this.loadPlaceholder(game);
-        }
+        // Usar AppLoader para cargar la app
+        this.appLoader.loadApp(appConfig, this.gameContent);
+
+        // Ocultar home screen en móvil
+        window.UIManager.hideHomeScreen();
     }
 
     /**
-     * Carga la app de Settings
-     */
-    loadSettings() {
-        const currentWallpaper = window.StateManager.getCurrentWallpaper();
-        this.gameContent.innerHTML = window.UIManager.createSettingsContent(
-            currentWallpaper,
-            (wallpaperId) => window.StateManager.selectWallpaper(wallpaperId)
-        );
-    }
-
-    /**
-     * Carga la app de Messages
-     */
-    loadMessages() {
-        this.gameContent.innerHTML = window.UIManager.createMessagesContent();
-    }
-
-    /**
-     * Carga la app de Browser
-     */
-    loadBrowser() {
-        this.gameContent.innerHTML = window.UIManager.createBrowserContent();
-    }
-
-    /**
-     * Carga la app de Wallet
-     */
-    loadWallet() {
-        this.gameContent.innerHTML = window.UIManager.createWalletContent();
-    }
-
-    /**
-     * Carga un placeholder para apps no implementadas
+     * Carga un placeholder para contenido no implementado
      */
     loadPlaceholder(game) {
+        if (!this.gameContainer || !this.gameContent) return;
+
+        this.gameContainer.classList.add('active');
         this.gameContent.innerHTML = `
-            <div style="text-align: center; color: #333;">
-                <h2>${game.icon} ${game.name}</h2>
-                <p>Coming soon with AI!</p>
-                <div style="margin-top: 20px; padding: 20px; background: #e0e0e0; border-radius: 10px;">
-                    <p>This game will be available soon with artificial intelligence.</p>
+            <div style="padding: 20px; color: #fff; background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); height: 100%; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">${game.icon}</div>
+                    <h2 style="margin-bottom: 10px;">${game.name}</h2>
+                    <p style="color: rgba(255, 255, 255, 0.6);">Coming soon!</p>
                 </div>
             </div>
         `;
+
+        window.UIManager.hideHomeScreen();
     }
 
     /**
-     * Cierra el juego actual
+     * Carga la app de Settings (legacy support - ahora usa AppLoader)
+     */
+    loadSettings() {
+        this.loadApp({ id: 'settings', name: 'Settings', icon: '⚙️' });
+    }
+
+    /**
+     * Cierra el juego o app actual
      */
     closeGame() {
         if (this.gameContainer) {
             this.gameContainer.classList.remove('active');
+        }
+
+        // Limpiar app loader si existe
+        if (this.appLoader) {
+            this.appLoader.cleanup();
         }
 
         window.UIManager.showHomeScreen();
@@ -141,10 +124,22 @@ class NavigationManager {
     }
 
     /**
-     * Obtiene el juego actual
+     * Obtiene el juego o app actual
      */
     getCurrentGame() {
         return this.currentGame;
+    }
+
+    /**
+     * Limpia todos los recursos
+     */
+    cleanup() {
+        if (this.gameLoader) {
+            // GameLoader limpia automáticamente con eventos
+        }
+        if (this.appLoader) {
+            this.appLoader.cleanupAll();
+        }
     }
 }
 
