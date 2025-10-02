@@ -82,11 +82,13 @@ body {
     grid-row: 1 / 2;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-    gap: 12px;
+    /* Estructura interna igual que móvil: 4 filas (nombre, GM, Estrella, Robot) */
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    row-gap: 8px;
+    align-items: start;
+    justify-items: stretch;
     transform: translateY(-15%);
 }
 
@@ -113,21 +115,13 @@ body {
     .user-widget > * { min-width: 0; }
 }
 
-.widget-left {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
+.widget-left { display: contents; }
 
 @media (max-width: 768px) {
     .widget-left { display: contents; }
 }
 
-.widget-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
+.widget-right { display: contents; }
 
 @media (max-width: 768px) {
     .widget-right { display: contents; }
@@ -205,12 +199,7 @@ body {
     }
 }
 
-.widget-stats-vertical {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-}
+.widget-stats-vertical { display: contents; }
 
 @media (max-width: 768px) {
     .widget-stats-vertical { display: contents; }
@@ -219,8 +208,8 @@ body {
 .stat-row {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
+    justify-content: flex-start;
+    gap: 6px;
     padding: 0;
     background: transparent;
     border-radius: 0;
@@ -324,6 +313,8 @@ body {
     gap: 14px;
     padding: 0;
     width: 100%;
+    justify-content: flex-start;
+    grid-row: 4;
 }
 
 @media (max-width: 768px) {
