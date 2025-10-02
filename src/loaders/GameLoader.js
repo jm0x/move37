@@ -28,18 +28,24 @@ class GameLoader {
      * Inicializa el juego específico según su ID
      */
     initializeGame(gameId, gameArea) {
+        // Verificar si los juegos están habilitados
+        if (!CONSTANTS.GAMES_ENABLED) {
+            this.loadPlaceholder(gameArea, gameId);
+            return;
+        }
+
         switch (gameId) {
             case 'snake':
-                this.loadSnake(gameArea);
+                this.loadSerpent(gameArea);
                 break;
             case 'minesweeper':
-                this.loadMinesweeper(gameArea);
+                this.loadBombHunt(gameArea);
                 break;
             case 'combat':
                 this.loadCombat(gameArea);
                 break;
             case 'pong':
-                this.loadPong(gameArea);
+                this.loadPaddle(gameArea);
                 break;
             default:
                 this.loadPlaceholder(gameArea, gameId);
@@ -47,24 +53,24 @@ class GameLoader {
     }
 
     /**
-     * Carga el juego Snake
+     * Carga el juego Serpent
      */
-    loadSnake(gameArea) {
-        if (typeof initializeSnakeInContainer === 'function') {
-            initializeSnakeInContainer(gameArea, this.gameContainer);
+    loadSerpent(gameArea) {
+        if (typeof initializeSerpentInContainer === 'function') {
+            initializeSerpentInContainer(gameArea, this.gameContainer);
         } else {
-            console.error('Snake game not loaded');
+            console.error('Serpent game not loaded');
         }
     }
 
     /**
-     * Carga el juego Minesweeper
+     * Carga el juego Bomb Hunt
      */
-    loadMinesweeper(gameArea) {
-        if (typeof initializeMinesweeperInContainer === 'function') {
-            initializeMinesweeperInContainer(gameArea, this.gameContainer);
+    loadBombHunt(gameArea) {
+        if (typeof initializeBombHuntInContainer === 'function') {
+            initializeBombHuntInContainer(gameArea, this.gameContainer);
         } else {
-            console.error('Minesweeper game not loaded');
+            console.error('Bomb Hunt game not loaded');
         }
     }
 
@@ -80,13 +86,13 @@ class GameLoader {
     }
 
     /**
-     * Carga el juego Pong
+     * Carga el juego Paddle
      */
-    loadPong(gameArea) {
-        if (typeof initializePongInContainer === 'function') {
-            initializePongInContainer(gameArea, this.gameContainer);
+    loadPaddle(gameArea) {
+        if (typeof initializePaddleInContainer === 'function') {
+            initializePaddleInContainer(gameArea, this.gameContainer);
         } else {
-            console.error('Pong game not loaded');
+            console.error('Paddle game not loaded');
         }
     }
 
@@ -94,10 +100,20 @@ class GameLoader {
      * Carga un placeholder para juegos no implementados
      */
     loadPlaceholder(gameArea, gameId) {
+        // Mapeo de IDs a nombres sin copyright
+        const gameNames = {
+            'snake': 'Serpent',
+            'minesweeper': 'Bomb Hunt',
+            'pong': 'Paddle',
+            'combat': 'Combat'
+        };
+
+        const gameName = gameNames[gameId] || gameId;
+
         gameArea.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 20px;">
                 <div style="font-size: 60px; margin-bottom: 20px;">🎮</div>
-                <h2 style="margin-bottom: 10px; font-size: 24px;">Game: ${gameId}</h2>
+                <h2 style="margin-bottom: 10px; font-size: 24px;">${gameName}</h2>
                 <p style="color: rgba(255, 255, 255, 0.6); font-size: 16px;">Coming soon!</p>
             </div>
         `;

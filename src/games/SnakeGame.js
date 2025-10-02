@@ -1,9 +1,9 @@
 /**
- * SnakeGame - Juego de la serpiente usando la nueva arquitectura
+ * SerpentGame - Juego Serpent usando la nueva arquitectura
  * Extiende BaseGame para heredar funcionalidad común
  */
 
-class SnakeGame extends BaseGame {
+class SerpentGame extends BaseGame {
     constructor() {
         const config = {
             modalId: 'gameOver',
@@ -21,7 +21,7 @@ class SnakeGame extends BaseGame {
         this.nextDirection = 'right';
         this.cellSize = 20;
         this.canvasSize = 400;
-        this.currentFood = SNAKE_FOOD_TYPES[0];
+        this.currentFood = SERPENT_FOOD_TYPES[0];
         this.eatEffectParticles = [];
     }
 
@@ -34,13 +34,13 @@ class SnakeGame extends BaseGame {
         if (isMobile) {
             const screenWidth = window.innerWidth;
             this.canvasSize = screenWidth;
-            this.cellSize = Math.floor(screenWidth / CONSTANTS.GRID_SIZE.SNAKE_CELLS);
+            this.cellSize = Math.floor(screenWidth / CONSTANTS.GRID_SIZE.SERPENT_CELLS);
         } else {
-            this.cellSize = CONSTANTS.CELL_SIZE.SNAKE_DESKTOP;
-            this.canvasSize = this.cellSize * CONSTANTS.GRID_SIZE.SNAKE_CELLS;
+            this.cellSize = CONSTANTS.CELL_SIZE.SERPENT_DESKTOP;
+            this.canvasSize = this.cellSize * CONSTANTS.GRID_SIZE.SERPENT_CELLS;
         }
 
-        gameArea.innerHTML = GameUI.createGameCanvas(this.canvasSize, 'snakeCanvas', {
+        gameArea.innerHTML = GameUI.createGameCanvas(this.canvasSize, 'serpentCanvas', {
             modalId: this.config.modalId,
             titleId: this.config.titleId,
             messageId: this.config.messageId,
@@ -55,7 +55,7 @@ class SnakeGame extends BaseGame {
             messageText: 'Final Score: <span id="finalScore" style="color: white; font-weight: 600;">0</span>'
         });
 
-        this.canvas = document.getElementById('snakeCanvas');
+        this.canvas = document.getElementById('serpentCanvas');
         this.ctx = this.canvas.getContext('2d');
     }
 
@@ -162,7 +162,7 @@ class SnakeGame extends BaseGame {
         this.generateFood();
         this.updateScore(0);
         this.hideGameOver();
-        this.startGameLoop(CONSTANTS.SNAKE_FPS);
+        this.startGameLoop(CONSTANTS.SERPENT_FPS);
     }
 
     /**
@@ -175,7 +175,7 @@ class SnakeGame extends BaseGame {
             y: Helpers.randomInt(0, gridSize - 1)
         };
 
-        this.currentFood = Helpers.weightedRandom(SNAKE_FOOD_TYPES);
+        this.currentFood = Helpers.weightedRandom(SERPENT_FOOD_TYPES);
 
         // Asegurar que no aparezca sobre la serpiente
         for (let segment of this.snake) {
@@ -240,11 +240,11 @@ class SnakeGame extends BaseGame {
      */
     render() {
         // Limpiar canvas
-        this.ctx.fillStyle = CONSTANTS.COLORS.SNAKE_BG;
+        this.ctx.fillStyle = CONSTANTS.COLORS.SERPENT_BG;
         this.ctx.fillRect(0, 0, this.canvasSize, this.canvasSize);
 
         // Dibujar serpiente
-        this.ctx.fillStyle = CONSTANTS.COLORS.SNAKE_BODY;
+        this.ctx.fillStyle = CONSTANTS.COLORS.SERPENT_BODY;
         for (let segment of this.snake) {
             this.ctx.fillRect(
                 segment.x * this.cellSize + 1,
@@ -338,10 +338,10 @@ class SnakeGame extends BaseGame {
 }
 
 // Función de inicialización para compatibilidad con GameLoader
-function initializeSnakeInContainer(gameArea, gameContainer) {
-    const game = new SnakeGame();
+function initializeSerpentInContainer(gameArea, gameContainer) {
+    const game = new SerpentGame();
     game.initialize(gameArea, gameContainer);
 }
 
 // Exportar
-window.SnakeGame = SnakeGame;
+window.SerpentGame = SerpentGame;

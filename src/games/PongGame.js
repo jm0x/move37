@@ -1,9 +1,9 @@
 /**
- * PongGame - Juego de Pong usando la nueva arquitectura
+ * PaddleGame - Juego Paddle usando la nueva arquitectura
  * Extiende BaseGame para heredar funcionalidad común
  */
 
-class PongGame extends BaseGame {
+class PaddleGame extends BaseGame {
     constructor() {
         const config = {
             modalId: 'pongGameOver',
@@ -30,7 +30,7 @@ class PongGame extends BaseGame {
         const isMobile = Helpers.isMobile();
         this.canvasSize = isMobile ? window.innerWidth : 450;
 
-        gameArea.innerHTML = GameUI.createGameCanvas(this.canvasSize, 'pongCanvas', {
+        gameArea.innerHTML = GameUI.createGameCanvas(this.canvasSize, 'paddleCanvas', {
             modalId: this.config.modalId,
             titleId: this.config.titleId,
             messageId: this.config.messageId,
@@ -45,7 +45,7 @@ class PongGame extends BaseGame {
             messageText: 'Final Score: <span id="pongFinalScore" style="color: white; font-weight: 600;">0 - 0</span>'
         });
 
-        this.canvas = document.getElementById('pongCanvas');
+        this.canvas = document.getElementById('paddleCanvas');
         this.ctx = this.canvas.getContext('2d');
 
         // Ajustar posiciones de paletas
@@ -156,8 +156,8 @@ class PongGame extends BaseGame {
         const angle = Helpers.randomFloat(-Math.PI / 4, Math.PI / 4);
         const direction = Math.random() < 0.5 ? 1 : -1;
 
-        this.ball.speedX = Math.cos(angle) * CONSTANTS.PONG.BALL_SPEED_X * direction;
-        this.ball.speedY = Math.sin(angle) * CONSTANTS.PONG.BALL_SPEED_Y;
+        this.ball.speedX = Math.cos(angle) * CONSTANTS.PADDLE.BALL_SPEED_X * direction;
+        this.ball.speedY = Math.sin(angle) * CONSTANTS.PADDLE.BALL_SPEED_Y;
     }
 
     /**
@@ -168,10 +168,10 @@ class PongGame extends BaseGame {
 
         // Mover paddle del jugador (teclado)
         if (window.InputManager.isKeyPressed('ArrowUp')) {
-            this.paddle1.y -= CONSTANTS.PONG.PADDLE_SPEED;
+            this.paddle1.y -= CONSTANTS.PADDLE.PADDLE_SPEED;
         }
         if (window.InputManager.isKeyPressed('ArrowDown')) {
-            this.paddle1.y += CONSTANTS.PONG.PADDLE_SPEED;
+            this.paddle1.y += CONSTANTS.PADDLE.PADDLE_SPEED;
         }
 
         // Limitar paddle del jugador
@@ -202,7 +202,7 @@ class PongGame extends BaseGame {
             this.ball.speedX = Math.abs(this.ball.speedX);
 
             const hitPos = (this.ball.y - this.paddle1.y) / this.paddle1.height;
-            this.ball.speedY = (hitPos - 0.5) * CONSTANTS.PONG.BALL_SPEED_Y * 2;
+            this.ball.speedY = (hitPos - 0.5) * CONSTANTS.PADDLE.BALL_SPEED_Y * 2;
         }
 
         // Colisión con paddle derecho (AI)
@@ -213,7 +213,7 @@ class PongGame extends BaseGame {
             this.ball.speedX = -Math.abs(this.ball.speedX);
 
             const hitPos = (this.ball.y - this.paddle2.y) / this.paddle2.height;
-            this.ball.speedY = (hitPos - 0.5) * CONSTANTS.PONG.BALL_SPEED_Y * 2;
+            this.ball.speedY = (hitPos - 0.5) * CONSTANTS.PADDLE.BALL_SPEED_Y * 2;
         }
 
         // Punto para AI
@@ -249,7 +249,7 @@ class PongGame extends BaseGame {
             const diff = ballY - paddleCenter;
 
             if (Math.abs(diff) > 10) {
-                const moveSpeed = CONSTANTS.PONG.PADDLE_SPEED * CONSTANTS.PONG.AI_DIFFICULTY;
+                const moveSpeed = CONSTANTS.PADDLE.PADDLE_SPEED * CONSTANTS.PADDLE.AI_DIFFICULTY;
                 this.paddle2.y += diff > 0 ? moveSpeed : -moveSpeed;
             }
         }
@@ -266,8 +266,8 @@ class PongGame extends BaseGame {
      * Verifica ganador
      */
     checkWinner() {
-        if (this.scoreData.player >= CONSTANTS.PONG.MAX_SCORE ||
-            this.scoreData.ai >= CONSTANTS.PONG.MAX_SCORE) {
+        if (this.scoreData.player >= CONSTANTS.PADDLE.MAX_SCORE ||
+            this.scoreData.ai >= CONSTANTS.PADDLE.MAX_SCORE) {
             this.endGame();
         }
     }
@@ -313,7 +313,7 @@ class PongGame extends BaseGame {
         this.ctx.setLineDash([]);
 
         // Paddle jugador
-        this.ctx.fillStyle = CONSTANTS.COLORS.PONG_PLAYER;
+        this.ctx.fillStyle = CONSTANTS.COLORS.PADDLE_PLAYER;
         this.ctx.fillRect(
             this.paddle1.x,
             this.paddle1.y,
@@ -322,7 +322,7 @@ class PongGame extends BaseGame {
         );
 
         // Paddle AI
-        this.ctx.fillStyle = CONSTANTS.COLORS.PONG_AI;
+        this.ctx.fillStyle = CONSTANTS.COLORS.PADDLE_AI;
         this.ctx.fillRect(
             this.paddle2.x,
             this.paddle2.y,
@@ -331,7 +331,7 @@ class PongGame extends BaseGame {
         );
 
         // Pelota
-        this.ctx.fillStyle = CONSTANTS.COLORS.PONG_BALL;
+        this.ctx.fillStyle = CONSTANTS.COLORS.PADDLE_BALL;
         this.ctx.beginPath();
         this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2);
         this.ctx.fill();
@@ -348,10 +348,10 @@ class PongGame extends BaseGame {
 }
 
 // Función de inicialización para compatibilidad con GameLoader
-function initializePongInContainer(gameArea, gameContainer) {
-    const game = new PongGame();
+function initializePaddleInContainer(gameArea, gameContainer) {
+    const game = new PaddleGame();
     game.initialize(gameArea, gameContainer);
 }
 
 // Exportar
-window.PongGame = PongGame;
+window.PaddleGame = PaddleGame;

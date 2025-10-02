@@ -1,9 +1,9 @@
 /**
- * MinesweeperGame - Juego de buscaminas usando la nueva arquitectura
+ * BombHuntGame - Juego Bomb Hunt usando la nueva arquitectura
  * Extiende BaseGame para heredar funcionalidad común
  */
 
-class MinesweeperGame extends BaseGame {
+class BombHuntGame extends BaseGame {
     constructor() {
         const config = {
             modalId: 'gameResult',
@@ -16,10 +16,10 @@ class MinesweeperGame extends BaseGame {
 
         // Estado del juego
         this.grid = [];
-        this.rows = CONSTANTS.GRID_SIZE.MINESWEEPER.rows;
-        this.cols = CONSTANTS.GRID_SIZE.MINESWEEPER.cols;
-        this.mines = CONSTANTS.GRID_SIZE.MINESWEEPER.mines;
-        this.cellSize = CONSTANTS.CELL_SIZE.MINESWEEPER;
+        this.rows = CONSTANTS.GRID_SIZE.BOMB_HUNT.rows;
+        this.cols = CONSTANTS.GRID_SIZE.BOMB_HUNT.cols;
+        this.mines = CONSTANTS.GRID_SIZE.BOMB_HUNT.mines;
+        this.cellSize = CONSTANTS.CELL_SIZE.BOMB_HUNT;
         this.firstClick = true;
         this.flagsPlaced = 0;
         this.cellsRevealed = 0;
@@ -39,7 +39,7 @@ class MinesweeperGame extends BaseGame {
         // Ajustar cellSize para que quepa perfectamente
         this.cellSize = canvasSize / this.cols;
 
-        gameArea.innerHTML = GameUI.createGameCanvas(canvasSize, 'minesweeperCanvas', {
+        gameArea.innerHTML = GameUI.createGameCanvas(canvasSize, 'bombHuntCanvas', {
             modalId: this.config.modalId,
             titleId: this.config.titleId,
             messageId: this.config.messageId,
@@ -47,7 +47,7 @@ class MinesweeperGame extends BaseGame {
             buttonText: 'New Game'
         });
 
-        this.canvas = document.getElementById('minesweeperCanvas');
+        this.canvas = document.getElementById('bombHuntCanvas');
         this.ctx = this.canvas.getContext('2d');
     }
 
@@ -389,7 +389,7 @@ class MinesweeperGame extends BaseGame {
      * Actualiza el estado del juego (no usado en este juego)
      */
     update() {
-        // Minesweeper no necesita update continuo
+        // Bomb Hunt no necesita update continuo
     }
 
     /**
@@ -406,16 +406,16 @@ class MinesweeperGame extends BaseGame {
                 if (cell.isRevealed) {
                     if (cell.isMine) {
                         // Mina
-                        this.ctx.fillStyle = CONSTANTS.COLORS.MINESWEEPER_MINE;
+                        this.ctx.fillStyle = CONSTANTS.COLORS.BOMB_HUNT_MINE;
                         this.ctx.fillRect(screenPos.x, screenPos.y, this.cellSize, this.cellSize);
                         GameUI.drawEmoji(this.ctx, '💣', screenPos.x + this.cellSize / 2, screenPos.y + this.cellSize / 2);
                     } else {
                         // Celda segura
-                        this.ctx.fillStyle = CONSTANTS.COLORS.MINESWEEPER_SAFE;
+                        this.ctx.fillStyle = CONSTANTS.COLORS.BOMB_HUNT_SAFE;
                         this.ctx.fillRect(screenPos.x, screenPos.y, this.cellSize, this.cellSize);
 
                         if (cell.adjacentMines > 0) {
-                            this.ctx.fillStyle = MINESWEEPER_COLORS[cell.adjacentMines];
+                            this.ctx.fillStyle = BOMB_HUNT_COLORS[cell.adjacentMines];
                             this.ctx.font = `bold ${Math.floor(this.cellSize * 0.5)}px Arial`;
                             this.ctx.textAlign = 'center';
                             this.ctx.textBaseline = 'middle';
@@ -428,7 +428,7 @@ class MinesweeperGame extends BaseGame {
                     }
                 } else {
                     // Celda oculta
-                    this.ctx.fillStyle = CONSTANTS.COLORS.MINESWEEPER_HIDDEN;
+                    this.ctx.fillStyle = CONSTANTS.COLORS.BOMB_HUNT_HIDDEN;
                     this.ctx.fillRect(screenPos.x, screenPos.y, this.cellSize, this.cellSize);
 
                     if (cell.isFlagged) {
@@ -459,10 +459,10 @@ class MinesweeperGame extends BaseGame {
 }
 
 // Función de inicialización para compatibilidad con GameLoader
-function initializeMinesweeperInContainer(gameArea, gameContainer) {
-    const game = new MinesweeperGame();
+function initializeBombHuntInContainer(gameArea, gameContainer) {
+    const game = new BombHuntGame();
     game.initialize(gameArea, gameContainer);
 }
 
 // Exportar
-window.MinesweeperGame = MinesweeperGame;
+window.BombHuntGame = BombHuntGame;

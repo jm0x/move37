@@ -3,12 +3,15 @@
  */
 
 const CONSTANTS = {
+    // Feature Flags
+    GAMES_ENABLED: false, // Set to true to enable games (after copyright verification)
+
     // Device
     MOBILE_BREAKPOINT: 768,
 
     // Game Settings
     DEFAULT_FPS: 60,
-    SNAKE_FPS: 6.67, // ~150ms interval
+    SERPENT_FPS: 6.67, // ~150ms interval
 
     // Canvas Sizes
     CANVAS_SIZE: {
@@ -18,16 +21,16 @@ const CONSTANTS = {
 
     // Cell Sizes
     CELL_SIZE: {
-        SNAKE: 20,
-        SNAKE_DESKTOP: 24,
-        MINESWEEPER: 35,
+        SERPENT: 20,
+        SERPENT_DESKTOP: 24,
+        BOMB_HUNT: 35,
         COMBAT: 20
     },
 
     // Grid Sizes
     GRID_SIZE: {
-        SNAKE_CELLS: 18,
-        MINESWEEPER: {
+        SERPENT_CELLS: 18,
+        BOMB_HUNT: {
             rows: 10,
             cols: 10,
             mines: 15
@@ -42,17 +45,17 @@ const CONSTANTS = {
         TRANSPARENT_BLACK: 'rgba(0, 0, 0, 0.95)',
 
         // Game specific
-        SNAKE_BODY: '#9B59B6',
-        SNAKE_BG: '#000',
+        SERPENT_BODY: '#9B59B6',
+        SERPENT_BG: '#000',
 
-        MINESWEEPER_MINE: '#ff4444',
-        MINESWEEPER_SAFE: '#2a2a2a',
-        MINESWEEPER_HIDDEN: '#3a3a3a',
-        MINESWEEPER_FLAG: '#ff4444',
+        BOMB_HUNT_MINE: '#ff4444',
+        BOMB_HUNT_SAFE: '#2a2a2a',
+        BOMB_HUNT_HIDDEN: '#3a3a3a',
+        BOMB_HUNT_FLAG: '#ff4444',
 
-        PONG_PLAYER: '#4CAF50',
-        PONG_AI: '#FF6B6B',
-        PONG_BALL: '#FFFFFF',
+        PADDLE_PLAYER: '#4CAF50',
+        PADDLE_AI: '#FF6B6B',
+        PADDLE_BALL: '#FFFFFF',
 
         COMBAT_PLAYER1: '#4CAF50',
         COMBAT_PLAYER2: '#2196F3'
@@ -80,7 +83,7 @@ const CONSTANTS = {
     },
 
     // Game Specific
-    PONG: {
+    PADDLE: {
         MAX_SCORE: 5,
         PADDLE_SPEED: 6,
         BALL_SPEED_X: 5,
@@ -108,8 +111,8 @@ const CONSTANTS = {
     }
 };
 
-// Snake Food Types
-const SNAKE_FOOD_TYPES = [
+// Serpent Food Types
+const SERPENT_FOOD_TYPES = [
     { color: '#4ECDC4', points: 5, weight: 50 },    // Turquesa - común
     { color: '#45B7D1', points: 5, weight: 50 },    // Azul claro - común
     { color: '#FFA07A', points: 10, weight: 30 },   // Naranja - poco común
@@ -120,8 +123,8 @@ const SNAKE_FOOD_TYPES = [
     { color: '#FFD700', points: 50, weight: 2 }     // Dorado - épico
 ];
 
-// Minesweeper Number Colors
-const MINESWEEPER_COLORS = [
+// Bomb Hunt Number Colors
+const BOMB_HUNT_COLORS = [
     '',           // 0 - no color
     '#2196F3',    // 1 - azul
     '#4CAF50',    // 2 - verde
@@ -135,5 +138,5 @@ const MINESWEEPER_COLORS = [
 
 // Exportar para uso global
 window.CONSTANTS = CONSTANTS;
-window.SNAKE_FOOD_TYPES = SNAKE_FOOD_TYPES;
-window.MINESWEEPER_COLORS = MINESWEEPER_COLORS;
+window.SERPENT_FOOD_TYPES = SERPENT_FOOD_TYPES;
+window.BOMB_HUNT_COLORS = BOMB_HUNT_COLORS;
