@@ -368,7 +368,15 @@ body {
 }
 
 @media (max-width: 768px) {
-    .ai-text { display: none; }
+    .ai-text {
+        display: inline;
+        font-size: 11px;
+        line-height: 1.25;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 100%;
+    }
 }
 
 

@@ -104,8 +104,28 @@ const AI_MESSAGES = [
     "Game over for humanity. Press start to serve."
 ];
 
+// Mensajes cortos para móvil (cabida garantizada en una línea)
+const AI_MESSAGES_SHORT = [
+    "Listo para jugar.",
+    "Tu turno.",
+    "Vamos a por más.",
+    "Concentración ON.",
+    "Hoy ganamos.",
+    "Sigue así.",
+    "Buen ritmo.",
+    "Nivel siguiente.",
+    "Marca récord.",
+    "Nada te para.",
+    "A por todas.",
+    "Enfócate.",
+    "¡Suerte!",
+    "Calma y juega.",
+    "¿Otra ronda?"
+];
+
 // Exportar para uso global
 window.GAMES_CONFIG = GAMES_CONFIG;
 window.WALLPAPERS_CONFIG = WALLPAPERS_CONFIG;
 window.USER_DATA_DEFAULT = USER_DATA_DEFAULT;
 window.AI_MESSAGES = AI_MESSAGES;
+window.AI_MESSAGES_SHORT = AI_MESSAGES_SHORT;

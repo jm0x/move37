@@ -136,13 +136,23 @@ class UIManager {
     updateAIMessage() {
         const aiTextElement = document.getElementById('ai-message-text');
         if (aiTextElement) {
-            const randomMessage = Helpers.randomElement(AI_MESSAGES);
+            const useShort = Helpers.isMobile();
+            const pool = useShort && typeof AI_MESSAGES_SHORT !== 'undefined' ? AI_MESSAGES_SHORT : AI_MESSAGES;
+            const randomMessage = Helpers.randomElement(pool);
 
             // Fade out
             aiTextElement.style.opacity = '0';
 
             setTimeout(() => {
                 aiTextElement.textContent = randomMessage;
+                // En móvil forzamos tamaño y no wrapping extremo
+                if (Helpers.isMobile()) {
+                    aiTextElement.style.fontSize = '11px';
+                    aiTextElement.style.lineHeight = '1.25';
+                    aiTextElement.style.whiteSpace = 'nowrap';
+                    aiTextElement.style.textOverflow = 'ellipsis';
+                    aiTextElement.style.overflow = 'hidden';
+                }
                 // Fade in
                 aiTextElement.style.opacity = '1';
             }, 300);
