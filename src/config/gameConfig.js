@@ -27,7 +27,7 @@ const GAMES_CONFIG = [
     {
         id: 'browser',
         name: 'Browser',
-        icon: '🦊',
+        icon: '☕',
         color: '#FF6B35',
         isDock: true
     },
