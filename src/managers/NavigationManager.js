@@ -93,7 +93,7 @@ class NavigationManager {
     }
 
     /**
-     * Carga la app de Browser
+     * Carga la app de Coffee
      */
     loadBrowser() {
         this.gameContent.innerHTML = window.UIManager.createBrowserContent();
