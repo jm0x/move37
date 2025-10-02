@@ -404,7 +404,45 @@ body {
         grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(6, 1fr);
         gap: 10px;
-        padding: 40px 15px 120px;
+        padding: 40px 15px 80px;
+        align-content: center;
+    }
+}
+
+/* Ajustes para diferentes alturas de pantalla en móvil */
+@media (max-width: 768px) and (min-height: 800px) {
+    .apps-grid {
+        padding: 60px 15px 100px;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) and (min-height: 900px) {
+    .apps-grid {
+        padding: 80px 15px 120px;
+        gap: 20px;
+    }
+}
+
+/* Para PWA en pantalla completa (más altura disponible) */
+@media (max-width: 768px) and (display-mode: standalone) {
+    .apps-grid {
+        padding: 50px 15px 60px;
+        align-content: space-evenly;
+    }
+}
+
+@media (max-width: 768px) and (display-mode: standalone) and (min-height: 800px) {
+    .apps-grid {
+        padding: 70px 15px 80px;
+        gap: 18px;
+    }
+}
+
+@media (max-width: 768px) and (display-mode: standalone) and (min-height: 900px) {
+    .apps-grid {
+        padding: 90px 15px 100px;
+        gap: 22px;
     }
 }
 
